@@ -34,25 +34,37 @@ function str(value, where) {
   return value
 }
 
+function isMapping(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
 function mergeTheme(raw) {
+  if (!isMapping(raw)) fail(`"theme" must be a mapping, got ${JSON.stringify(raw)}`)
   known(raw, Object.keys(DEFAULTS.theme), 'theme.')
   const theme = structuredClone(DEFAULTS.theme)
   if ('background' in raw) theme.background = str(raw.background, 'theme.background')
-  for (const [name, c] of Object.entries(raw.colors ?? {})) {
-    known(c, ['stroke', 'fill'], `theme.colors.${name}.`)
-    theme.colors[name] = {
-      stroke: str(c.stroke, `theme.colors.${name}.stroke`),
-      fill: str(c.fill, `theme.colors.${name}.fill`),
+  if ('colors' in raw) {
+    if (!isMapping(raw.colors)) fail(`"theme.colors" must be a mapping, got ${JSON.stringify(raw.colors)}`)
+    for (const [name, c] of Object.entries(raw.colors)) {
+      known(c, ['stroke', 'fill'], `theme.colors.${name}.`)
+      theme.colors[name] = {
+        stroke: str(c.stroke, `theme.colors.${name}.stroke`),
+        fill: str(c.fill, `theme.colors.${name}.fill`),
+      }
     }
   }
-  for (const [role, file] of Object.entries(raw.fonts ?? {})) {
-    if (!ROLES.includes(role)) fail(`unknown font role "${role}" (roles: ${ROLES.join(', ')})`)
-    theme.fonts[role] = str(file, `theme.fonts.${role}`)
+  if ('fonts' in raw) {
+    if (!isMapping(raw.fonts)) fail(`"theme.fonts" must be a mapping, got ${JSON.stringify(raw.fonts)}`)
+    for (const [role, file] of Object.entries(raw.fonts)) {
+      if (!ROLES.includes(role)) fail(`unknown font role "${role}" (roles: ${ROLES.join(', ')})`)
+      theme.fonts[role] = str(file, `theme.fonts.${role}`)
+    }
   }
   return theme
 }
 
 function mergeBehaviors(raw) {
+  if (!isMapping(raw)) fail(`"behaviors" must be a mapping, got ${JSON.stringify(raw)}`)
   known(raw, Object.keys(DEFAULTS.behaviors), 'behaviors.')
   const behaviors = { ...DEFAULTS.behaviors }
   if ('tapZones' in raw) {
@@ -87,9 +99,9 @@ export function mergeConfig(raw) {
   if (typeof raw !== 'object' || Array.isArray(raw)) fail('the top level must be a mapping')
   known(raw, Object.keys(DEFAULTS), '')
   return {
-    theme: mergeTheme(raw.theme ?? {}),
-    behaviors: mergeBehaviors(raw.behaviors ?? {}),
-    deploy: raw.deploy ? mergeDeploy(raw.deploy) : null,
+    theme: mergeTheme('theme' in raw ? raw.theme : {}),
+    behaviors: mergeBehaviors('behaviors' in raw ? raw.behaviors : {}),
+    deploy: raw.deploy ? mergeDeploy(raw.deploy) : null, // null deploy is documented YAML idiom for "no deploy section"
   }
 }
 

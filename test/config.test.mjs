@@ -75,3 +75,32 @@ test('a deck.yaml with real content loads and merges', () => {
   assert.equal(config.behaviors.holdMs, 650)
   assert.equal(config.behaviors.fullscreenButton, DEFAULTS.behaviors.fullscreenButton)
 })
+
+test('theme.colors null throws, naming the key', () => {
+  assert.throws(() => mergeConfig({ theme: { colors: null } }), /deck\.yaml:.*theme\.colors.*must be a mapping/)
+})
+
+test('theme.fonts null throws, naming the key', () => {
+  assert.throws(() => mergeConfig({ theme: { fonts: null } }), /deck\.yaml:.*theme\.fonts.*must be a mapping/)
+})
+
+test('theme.colors as scalar throws, naming the key', () => {
+  assert.throws(() => mergeConfig({ theme: { colors: 'notanobject' } }), /deck\.yaml:.*theme\.colors.*must be a mapping/)
+})
+
+test('theme.fonts as array throws, naming the key', () => {
+  assert.throws(() => mergeConfig({ theme: { fonts: [1, 2] } }), /deck\.yaml:.*theme\.fonts.*must be a mapping/)
+})
+
+test('theme null throws, naming the key', () => {
+  assert.throws(() => mergeConfig({ theme: null }), /deck\.yaml:.*theme.*must be a mapping/)
+})
+
+test('behaviors null throws, naming the key', () => {
+  assert.throws(() => mergeConfig({ behaviors: null }), /deck\.yaml:.*behaviors.*must be a mapping/)
+})
+
+test('deploy null is treated as absent (documented YAML idiom)', () => {
+  const config = mergeConfig({ deploy: null })
+  assert.equal(config.deploy, null)
+})
