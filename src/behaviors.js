@@ -37,6 +37,8 @@ export function createTapGrammar({ holdMs, tapZones, viewportWidth, inert, onNex
   }
   return {
     pointerDown(e) {
+      clearTimeout(tap.timer)
+      tap.timer = 0
       tap.held = false
       tap.down = inert() || e.button !== 0 ? null : { x: e.clientX, y: e.clientY, zone: zone(e.clientX) }
       if (!tap.down || tap.down.zone !== 'middle') return // zones act on release; only the middle holds

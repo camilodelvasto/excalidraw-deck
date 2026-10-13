@@ -99,6 +99,17 @@ test('cancel clears a pending hold', async () => {
   assert.deepEqual(log, { next: 0, prev: 0 })
 })
 
+test('pointerDown clears a stale hold timer: two downs with no up fires exactly one prev', async () => {
+  const { g, log, at } = grammar()
+  g.pointerDown(at(500))
+  await sleep(15) // stale timer pending
+  g.pointerDown(at(500)) // new press, must clear the old timer before setting new one
+  await sleep(60)
+  assert.deepEqual(log, { next: 0, prev: 1 }, 'exactly one hold fires for the new press')
+  g.pointerUp(at(500))
+  assert.deepEqual(log, { next: 0, prev: 1 }, 'release after the new hold adds nothing')
+})
+
 test('fullscreen button visibility: literal booleans win, auto follows the pointer', () => {
   assert.equal(fullscreenButtonVisible(true, false), true)
   assert.equal(fullscreenButtonVisible(false, true), false)
