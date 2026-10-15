@@ -4,6 +4,7 @@
 import { loadConfig } from '../src/config.js'
 import { loadTakes, checkMedia } from '../src/project.js'
 import { makeViteConfig } from '../src/vite.js'
+import { join } from 'node:path'
 
 const USAGE = 'usage: excalidraw-deck dev | build | deploy'
 
@@ -26,7 +27,16 @@ const commands = {
     const { build } = await import('vite')
     await build(makeViteConfig({ userDir, config }))
   },
-  async deploy() { throw new Error('deck: deploy not wired yet') },
+  async deploy() {
+    const { userDir, config } = await checkedProject()
+    if (!config.deploy)
+      throw new Error('deck: deck.yaml has no deploy section — add deploy: { remote, repo } (see the README)')
+    const { build } = await import('vite')
+    await build(makeViteConfig({ userDir, config }))
+    const { publish } = await import('../src/deploy/deploy.js')
+    publish({ distDir: join(userDir, 'dist'), deploy: config.deploy })
+    console.log(`deck: pushed dist/ to ${config.deploy.repo}`)
+  },
 }
 
 const [command] = process.argv.slice(2)

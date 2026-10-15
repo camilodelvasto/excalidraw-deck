@@ -24,3 +24,14 @@ test('an unknown command prints usage and exits non-zero', () => {
   assert.notEqual(r.code, 0)
   assert.match(r.err, /usage: excalidraw-deck/)
 })
+
+test('deck deploy without a deploy section says what to add', async () => {
+  const { mkdtempSync, writeFileSync } = await import('node:fs')
+  const { tmpdir } = await import('node:os')
+  const { join } = await import('node:path')
+  const dir = mkdtempSync(join(tmpdir(), 'deck-nodeploy-'))
+  writeFileSync(join(dir, 'slides.js'), `export const takes = [{ name: 'one', slides: [{ name: 's', col: 0, items: [] }] }]\n`)
+  const r = run(['deploy'], { cwd: dir })
+  assert.notEqual(r.code, 0)
+  assert.match(r.err, /deck\.yaml has no deploy section/)
+})
