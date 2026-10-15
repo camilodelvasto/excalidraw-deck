@@ -3,7 +3,7 @@
 // served from the Excalidraw package and the user's folder, a build copies them into dist/.
 import { createReadStream, existsSync, cpSync } from 'node:fs'
 import { createRequire } from 'node:module'
-import { extname, join, sep } from 'node:path'
+import { extname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 
@@ -36,6 +36,18 @@ function mime(path) {
   return type
 }
 
+// Dev-middleware path resolution: a url maps to candidate files, each jailed to its root.
+// A path that escapes its root (..) is dropped — not an error, just not served.
+export function assetCandidates(url, userDir, fontsDir) {
+  const jailed = (root, rel) => {
+    const p = resolve(root, rel)
+    return p.startsWith(root + sep) ? p : null
+  }
+  if (url.startsWith('/fonts/')) return [jailed(userDir, url.slice(1)), jailed(fontsDir, url.slice('/fonts/'.length))].filter(Boolean)
+  if (url.startsWith('/media/')) return [jailed(userDir, url.slice(1))].filter(Boolean)
+  return []
+}
+
 // virtual:deck-slides is the user's slides.js; virtual:deck-config is the merged deck.yaml.
 function deckVirtuals(userDir, config) {
   return {
@@ -58,11 +70,8 @@ function deckAssets(userDir) {
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent(req.url.split('?')[0])
         // The user's own files win /fonts/ (theme swaps live there); Excalidraw's families fill the rest.
-        const candidates = url.startsWith('/fonts/')
-          ? [join(userDir, url.slice(1)), join(fonts, url.slice('/fonts/'.length))]
-          : url.startsWith('/media/')
-            ? [join(userDir, url.slice(1))]
-            : []
+        // assetCandidates jails each path to its root — traversal attempts are dropped silently.
+        const candidates = assetCandidates(url, userDir, fonts)
         const hit = candidates.find((p) => existsSync(p))
         if (!hit) return next()
         res.setHeader('content-type', mime(hit))

@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { loadTakes, checkMedia } from '../src/project.js'
+import { assetCandidates } from '../src/vite.js'
 
 const project = (slidesJs) => {
   const dir = mkdtempSync(join(tmpdir(), 'deck-project-'))
@@ -37,4 +38,33 @@ test('a media item pointing at a missing file throws, naming the slide and the p
   mkdirSync(join(dir, 'media'))
   writeFileSync(join(dir, 'media', 'missing.png'), 'x')
   checkMedia(dir, takes) // present → no throw
+})
+
+// assetCandidates: pure path math, no fs access needed
+const U = '/tmp/u'
+const F = '/tmp/f'
+
+test('assetCandidates: path traversal in /fonts/ is dropped from both roots', () => {
+  assert.deepEqual(assetCandidates('/fonts/../../x', U, F), [])
+})
+
+test('assetCandidates: path traversal that escapes /media/ root is dropped', () => {
+  assert.deepEqual(assetCandidates('/media/../../etc/passwd', U, F), [])
+})
+
+test('assetCandidates: /fonts/ url returns two candidates, userDir first then fontsDir', () => {
+  const result = assetCandidates('/fonts/Virgil/a.woff2', U, F)
+  assert.equal(result.length, 2)
+  assert.ok(result[0].startsWith(U + '/'), `first candidate must be under userDir, got ${result[0]}`)
+  assert.ok(result[1].startsWith(F + '/'), `second candidate must be under fontsDir, got ${result[1]}`)
+})
+
+test('assetCandidates: /media/ url returns one candidate under userDir', () => {
+  const result = assetCandidates('/media/pic.svg', U, F)
+  assert.equal(result.length, 1)
+  assert.ok(result[0].startsWith(U + '/'), `candidate must be under userDir, got ${result[0]}`)
+})
+
+test('assetCandidates: unrecognised prefix returns empty', () => {
+  assert.deepEqual(assetCandidates('/elsewhere', U, F), [])
 })
