@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/camilodelvasto/excalidraw-deck/main/schemas/deck.schema.json",
+  "title": "excalidraw-deck deck.yaml",
+  "description": "Optional per-deck configuration. Every key is optional; defaults are stock Excalidraw.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "background": { "type": "string", "default": "#ffffff", "description": "Canvas color." },
+        "colors": {
+          "type": "object",
+          "description": "Extends/overrides the named-color table used by slides.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["stroke", "fill"],
+            "properties": { "stroke": { "type": "string" }, "fill": { "type": "string" } }
+          }
+        },
+        "fonts": {
+          "type": "object",
+          "description": "Re-points a role at a local woff2; absent roles stay Excalidraw's.",
+          "additionalProperties": false,
+          "properties": {
+            "draw": { "type": "string" },
+            "display": { "type": "string" },
+            "sans": { "type": "string" },
+            "mono": { "type": "string" },
+            "hand": { "type": "string" }
+          }
+        }
+      }
+    },
+    "behaviors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tapZones": { "type": "boolean", "default": true, "description": "Left 35% of the viewport taps back, right 35% next." },
+        "holdMs": { "type": "number", "exclusiveMinimum": 0, "default": 500, "description": "A press held this long means back." },
+        "fullscreenButton": { "enum": ["auto", true, false], "default": "auto", "description": "auto: visible for coarse pointers only." }
+      }
+    },
+    "deploy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["remote", "repo"],
+      "properties": {
+        "remote": { "enum": ["github-pages", "codeberg-pages"] },
+        "repo": { "type": "string", "description": "Git remote the pages branch is force-pushed to (ssh)." },
+        "branch": { "type": "string", "description": "Defaults to the forge's convention: gh-pages / pages." },
+        "cname": { "type": ["string", "null"], "description": "Custom domain → CNAME (GitHub) / .domains (Codeberg)." }
+      }
+    }
+  }
+}
