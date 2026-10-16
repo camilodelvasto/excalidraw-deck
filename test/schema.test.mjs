@@ -21,7 +21,15 @@ test('every section rejects unknown keys and mirrors the loader', () => {
   assert.deepEqual(Object.keys(behaviors.properties).sort(), Object.keys(DEFAULTS.behaviors).sort())
   assert.equal(deploy.additionalProperties, false)
   assert.deepEqual(Object.keys(deploy.properties).sort(), ['branch', 'cname', 'remote', 'repo'])
-  assert.deepEqual(deploy.required.sort(), ['remote', 'repo'])
+  assert.deepEqual([...deploy.required].sort(), ['remote', 'repo'])
+})
+
+test('color entries require stroke and fill, nothing else; holdMs must be positive', () => {
+  const entry = schema.properties.theme.properties.colors.additionalProperties
+  assert.equal(entry.additionalProperties, false)
+  assert.deepEqual([...entry.required].sort(), ['fill', 'stroke'])
+  assert.deepEqual(Object.keys(entry.properties).sort(), ['fill', 'stroke'])
+  assert.equal(schema.properties.behaviors.properties.holdMs.exclusiveMinimum, 0)
 })
 
 test('enums match the loader: font roles, remotes, fullscreenButton', () => {
