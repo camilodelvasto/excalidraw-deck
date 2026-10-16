@@ -1,0 +1,8 @@
+# $schema: ../../schemas/deck.schema.json
+theme:
+  background: '#faf9f7'
+  colors:
+    brand: { stroke: '#e03131', fill: '#ffc9c9' }
+deploy:
+  remote: github-pages
+  repo: git@github.com:camilodelvasto/excalidraw-deck.git

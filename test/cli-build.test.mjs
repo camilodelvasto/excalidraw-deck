@@ -3,6 +3,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { run } from './cli.test.mjs'
@@ -47,4 +48,11 @@ test('deck build fails fast, with one line, on a broken project', { timeout: 60_
   const r2 = run(['build'], { cwd: dir })
   assert.notEqual(r2.code, 0)
   assert.match(r2.err, /slide "s1" uses media\/gone\.svg/)
+})
+
+test('the showcase deck builds — the scaffold is never allowed to rot', { timeout: 120_000 }, () => {
+  const showcase = fileURLToPath(new URL('../examples/showcase', import.meta.url))
+  const r = run(['build'], { cwd: showcase })
+  assert.equal(r.code, 0, r.err)
+  assert.ok(existsSync(join(showcase, 'dist', 'index.html')))
 })
