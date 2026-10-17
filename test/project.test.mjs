@@ -29,6 +29,27 @@ test('slides.js without a non-empty takes export throws', async () => {
   await assert.rejects(loadTakes(project(`export const takes = [{ slides: [{ name: 's', col: 0, items: [] }] }]\n`)), /each take needs a name/)
 })
 
+test('a slide with non-array items throws, naming the take', async () => {
+  await assert.rejects(
+    loadTakes(project(`export const takes = [{ name: 'one', slides: [{ name: 's1', col: 0, items: 5 }] }]\n`)),
+    /deck:.*take "one".*items.*array/s,
+  )
+})
+
+test('a slide missing name throws', async () => {
+  await assert.rejects(
+    loadTakes(project(`export const takes = [{ name: 'two', slides: [{ col: 0, items: [] }] }]\n`)),
+    /deck:.*take "two".*name/s,
+  )
+})
+
+test('a slide with non-numeric col throws', async () => {
+  await assert.rejects(
+    loadTakes(project(`export const takes = [{ name: 'three', slides: [{ name: 's1', col: 'x', items: [] }] }]\n`)),
+    /deck:.*take "three".*col/s,
+  )
+})
+
 test('a media item pointing at a missing file throws, naming the slide and the path', async () => {
   const dir = project(`export const takes = [{ name: 'one', slides: [
     { name: 'demo', col: 0, items: [{ t: 'image', x: 0, y: 0, w: 100, h: 100, src: 'media/missing.png' }] },

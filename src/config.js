@@ -83,6 +83,7 @@ function mergeBehaviors(raw) {
 }
 
 function mergeDeploy(raw) {
+  if (!isMapping(raw)) fail(`"deploy" must be a mapping, got ${JSON.stringify(raw)}`)
   known(raw, ['remote', 'repo', 'branch', 'cname'], 'deploy.')
   if (!REMOTES.includes(raw.remote)) fail(`"deploy.remote" must be one of: ${REMOTES.join(', ')}, got ${JSON.stringify(raw.remote)}`)
   if (!('repo' in raw)) fail('"deploy.repo" is required (the git remote the pages branch is pushed to)')

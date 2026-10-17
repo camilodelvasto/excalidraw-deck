@@ -104,3 +104,7 @@ test('deploy null is treated as absent (documented YAML idiom)', () => {
   const config = mergeConfig({ deploy: null })
   assert.equal(config.deploy, null)
 })
+
+test('deploy as a non-mapping throws naming the section', () => {
+  assert.throws(() => mergeConfig({ deploy: 42 }), /deploy.*must be a mapping/)
+})

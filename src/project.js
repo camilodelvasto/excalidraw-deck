@@ -15,6 +15,14 @@ export async function loadTakes(userDir) {
   for (const t of takes) {
     if (typeof t.name !== 'string' || !t.name || !Array.isArray(t.slides) || t.slides.length === 0)
       throw new Error('deck: each take needs a name and a non-empty slides array')
+    for (const s of t.slides) {
+      if (typeof s !== 'object' || s === null || typeof s.name !== 'string' || !s.name)
+        throw new Error(`deck: take "${t.name}" has a slide missing a non-empty string name`)
+      if (!Number.isFinite(s.col))
+        throw new Error(`deck: take "${t.name}" slide "${s.name}" — col must be a finite number, got ${JSON.stringify(s.col)}`)
+      if (!Array.isArray(s.items))
+        throw new Error(`deck: take "${t.name}" slide "${s.name}" — items must be an array, got ${JSON.stringify(s.items)}`)
+    }
   }
   return takes
 }
