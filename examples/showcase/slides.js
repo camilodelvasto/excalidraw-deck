@@ -103,6 +103,7 @@ const theming = [
   },
 ]
 
+/** @type {import('excalidraw-deck').Takes} */
 export const takes = [
   { name: 'camera', slides: camera },
   { name: 'steps', slides: steps },

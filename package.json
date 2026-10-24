@@ -7,9 +7,14 @@
   "author": "Camilo Delvasto",
   "repository": "github:camilodelvasto/excalidraw-deck",
   "bin": { "excalidraw-deck": "bin/deck.js" },
-  "files": ["bin", "app", "src", "schemas", "examples", "README.md"],
+  "types": "./deck.d.ts",
+  "exports": { ".": { "types": "./deck.d.ts" } },
+  "files": ["bin", "app", "src", "schemas", "examples", "deck.d.ts", "README.md"],
   "engines": { "node": ">=20" },
   "scripts": { "test": "node --test test/*.mjs" },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.1",
     "@vitejs/plugin-react": "^4.7.0",
