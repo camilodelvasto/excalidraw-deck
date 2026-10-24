@@ -12,14 +12,12 @@ test('npm pack size and contents', () => {
     timeout: 30000,
   })
 
+  const raw = packOutput.toString()
   let packData
   try {
-    packData = JSON.parse(packOutput.toString())
-  } catch (e) {
-    // Strip non-JSON lines if needed
-    const lines = packOutput.toString().split('\n')
-    const jsonLines = lines.filter(line => line.trim().startsWith('[') || line.trim().startsWith('{') || /^\s*[\[\{]/.test(line))
-    packData = JSON.parse(jsonLines.join('\n'))
+    packData = JSON.parse(raw)
+  } catch {
+    throw new Error(`npm pack --json output was not valid JSON:\n${raw}`)
   }
 
   assert(Array.isArray(packData), 'pack output should be a JSON array')
