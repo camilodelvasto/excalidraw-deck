@@ -58,6 +58,10 @@ export const ITEM_REQUIRED = {
   image: ['x', 'y', 'w', 'h', 'src'],
 }
 
+export function flattenTakes(takes) {
+  return takes.flatMap((t, take) => t.slides.map((s) => ({ ...s, take })))
+}
+
 function need(item, key) {
   if (item[key] === undefined) throw new Error(`deck: ${item.t} item is missing "${key}"`)
   return item[key]

@@ -21,7 +21,7 @@ import {
   viewportCoordsToSceneCoords,
 } from '@excalidraw/excalidraw'
 import '@excalidraw/excalidraw/index.css'
-import { createBuild } from './build.js'
+import { createBuild, flattenTakes } from './build.js'
 import { createTapGrammar, fullscreenButtonVisible, keyAction } from './behaviors.js'
 
 const { build } = createBuild({
@@ -38,7 +38,7 @@ const FADE_MS = 350
 const ZOOM_STEP = 1.25
 
 export function mount(rootEl, takes, config) {
-  const slides = takes.flatMap((t, take) => t.slides.map((s) => ({ ...s, take })))
+  const slides = flattenTakes(takes)
   const swaps = Object.entries(config.theme.fonts).map(([role, file]) => [ROLE_FAMILY[role], file])
 
   // Excalidraw registers its font faces after mounting. Wait for them, add the theme's faces

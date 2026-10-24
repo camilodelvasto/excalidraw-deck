@@ -4,9 +4,11 @@
 import { loadConfig } from '../src/config.js'
 import { loadTakes, checkMedia } from '../src/project.js'
 import { makeViteConfig } from '../src/vite.js'
+import { checkDeck } from '../src/check.js'
+import { flattenTakes } from '../src/build.js'
 import { join } from 'node:path'
 
-const USAGE = 'usage: excalidraw-deck dev | build | deploy'
+const USAGE = 'usage: excalidraw-deck dev | build | deploy | check'
 
 async function checkedProject() {
   const userDir = process.cwd()
@@ -26,6 +28,11 @@ const commands = {
     const { userDir, config } = await checkedProject()
     const { build } = await import('vite')
     await build(makeViteConfig({ userDir, config }))
+  },
+  async check() {
+    const { takes } = await checkDeck(process.cwd())
+    const slides = flattenTakes(takes).length
+    console.log(`deck: ok — ${slides} slides in ${takes.length} takes`)
   },
   async deploy() {
     const { userDir, config } = await checkedProject()

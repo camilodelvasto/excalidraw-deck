@@ -1,27 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createBuild, FRAME, STOCK_COLORS, ITEM_KEYS, ITEM_REQUIRED } from '../src/build.js'
+import { stubConvert, STUB_FONT_FAMILY } from '../src/stub-convert.js'
 
-// A faithful stand-in for convertToExcalidrawElements' CONTRACT: measures text, keeps ids,
-// splits a `label` into a bound text element with containerId. Tests assert contracts the
-// deck format promises, not Excalidraw's numbers.
-function fakeConvert(skeletons) {
-  const out = []
-  for (const s of skeletons) {
-    const { label, ...el } = s
-    if (el.type === 'text') {
-      el.width ??= el.text.length * el.fontSize * 0.6
-      el.height ??= el.fontSize * 1.25
-    }
-    el.width ??= 0
-    el.height ??= 0
-    out.push(el)
-    if (label) out.push({ type: 'text', id: `${el.id}-label`, containerId: el.id, x: el.x, y: el.y, width: 10, height: 10, ...label })
-  }
-  return out
-}
-const fakeFontFamily = { 'Liberation Sans': 8, Virgil: 1, Nunito: 6, Cascadia: 7, Excalifont: 5 }
-const { build } = createBuild({ convert: fakeConvert, fontFamily: fakeFontFamily })
+const { build } = createBuild({ convert: stubConvert, fontFamily: STUB_FONT_FAMILY })
 const THEME = { background: '#ffffff', colors: {}, fonts: {} }
 
 const slide = (items, extra = {}) => ({ name: 's', col: 0, take: 0, items, ...extra })
