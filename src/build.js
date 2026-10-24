@@ -24,12 +24,39 @@ export const STOCK_COLORS = {
   'light-violet': { stroke: '#cc5de8', fill: '#f3d9fa' },
 }
 
-const GEOS = { rectangle: 'rectangle', ellipse: 'ellipse', diamond: 'diamond' }
-const FILLS = { none: null, semi: 'solid', pattern: 'hachure' }
-const DASHES = { draw: 'solid', dashed: 'dashed', dotted: 'dotted' }
-const ALIGNS = { start: 'left', middle: 'center', end: 'right' }
-const VALIGNS = { start: 'top', middle: 'middle', end: 'bottom' }
+export const GEOS = { rectangle: 'rectangle', ellipse: 'ellipse', diamond: 'diamond' }
+export const FILLS = { none: null, semi: 'solid', pattern: 'hachure' }
+export const DASHES = { draw: 'solid', dashed: 'dashed', dotted: 'dotted' }
+export const ALIGNS = { start: 'left', middle: 'center', end: 'right' }
+export const VALIGNS = { start: 'top', middle: 'middle', end: 'bottom' }
 const INK = '#1e1e1e'
+
+// Every key each item type accepts. Unknown keys throw; media items omit `fade`
+// because the overlay never reads it. Consumed by the check command, JSON schema, and TS types.
+export const ITEM_KEYS = {
+  text:  ['t', 'x', 'y', 'fs', 'text', 'font', 'color', 'align', 'angle', 'w', 'step', 'fade'],
+  box:   ['t', 'x', 'y', 'w', 'h', 'text', 'fs', 'geo', 'color', 'fill', 'dash', 'font', 'align', 'valign', 'ink', 'step', 'fade'],
+  note:  ['t', 'x', 'y', 'size', 'text', 'fs', 'color', 'font', 'ink', 'step', 'fade'],
+  plate: ['t', 'color', 'step', 'fade'],
+  arrow: ['t', 'from', 'to', 'color', 'sw', 'dash', 'text', 'fs', 'font', 'ink', 'start', 'end', 'step', 'fade'],
+  line:  ['t', 'from', 'to', 'color', 'sw', 'dash', 'text', 'fs', 'font', 'ink', 'step', 'fade'],
+  slot:  ['t', 'x', 'y', 'w', 'h', 'label', 'geo', 'fill', 'align', 'valign', 'ink', 'step', 'fade'],
+  video: ['t', 'x', 'y', 'w', 'h', 'src', 'step'],
+  image: ['t', 'x', 'y', 'w', 'h', 'src', 'step'],
+}
+
+// Keys whose absence throws. Builders keep their own need() calls as internal reinforcement.
+export const ITEM_REQUIRED = {
+  text: ['x', 'y', 'fs', 'text'],
+  box: ['x', 'y', 'w', 'h', 'text'],
+  note: ['x', 'y', 'size', 'text', 'fs'],
+  plate: [],
+  arrow: ['from', 'to'],
+  line: ['from', 'to'],
+  slot: ['x', 'y', 'w', 'h', 'label'],
+  video: ['x', 'y', 'w', 'h', 'src'],
+  image: ['x', 'y', 'w', 'h', 'src'],
+}
 
 function need(item, key) {
   if (item[key] === undefined) throw new Error(`deck: ${item.t} item is missing "${key}"`)
@@ -211,6 +238,12 @@ export function createBuild({ convert, fontFamily }) {
       slide.items.forEach((item, j) => {
         const step = item.step ?? 0
         while (steps.length <= step) steps.push([])
+        // Unknown type check first; then closed-key and required-key checks per ITEM_KEYS/ITEM_REQUIRED.
+        if (!ITEM_KEYS[item.t]) throw new Error(`deck: unknown item type "${item.t}" in slide "${slide.name}"`)
+        for (const key of Object.keys(item))
+          if (!ITEM_KEYS[item.t].includes(key))
+            throw new Error(`deck: ${item.t} item has unknown key "${key}" (known: ${ITEM_KEYS[item.t].join(', ')})`)
+        for (const key of ITEM_REQUIRED[item.t]) need(item, key)
         if (item.t === 'video' || item.t === 'image') {
           media.push({
             id: `media-${i}-${j}`,
@@ -225,7 +258,6 @@ export function createBuild({ convert, fontFamily }) {
           return
         }
         const make = builders[item.t]
-        if (!make) throw new Error(`deck: unknown item type "${item.t}" in slide "${slide.name}"`)
         const id = `s${i}-${j}`
         const skeleton = make(item)
         skeleton.id = id

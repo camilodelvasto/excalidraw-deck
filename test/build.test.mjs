@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { createBuild, FRAME, STOCK_COLORS } from '../src/build.js'
+import { createBuild, FRAME, STOCK_COLORS, ITEM_KEYS, ITEM_REQUIRED } from '../src/build.js'
 
 // A faithful stand-in for convertToExcalidrawElements' CONTRACT: measures text, keeps ids,
 // splits a `label` into a bound text element with containerId. Tests assert contracts the
@@ -109,4 +109,38 @@ test('centered text is re-placed once measured: x moves to center within the dec
     TAKES, THEME)
   const el = elements.find((e) => e.id === 's0-0')
   assert.equal(el.x, 100 + (600 - el.width) / 2)
+})
+
+test('an unknown item key throws, naming the type, key, and known keys', () => {
+  assert.throws(() => build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', colr: 'blue' }])], TAKES, THEME),
+    /text item has unknown key "colr" \(known: /)
+  assert.throws(() => build([slide([{ t: 'image', x: 0, y: 0, w: 10, h: 10, src: 'm.svg', fade: 50 }])], TAKES, THEME),
+    /image item has unknown key "fade"/)
+})
+
+test('every ITEM_REQUIRED key throws when absent; the full valid item builds', () => {
+  const VALID = {
+    text: { t: 'text', x: 0, y: 0, fs: 20, text: 'x' },
+    box: { t: 'box', x: 0, y: 0, w: 10, h: 10, text: '' },
+    note: { t: 'note', x: 0, y: 0, size: 100, text: 'x', fs: 20 },
+    plate: { t: 'plate' },
+    arrow: { t: 'arrow', from: [0, 0], to: [1, 1] },
+    line: { t: 'line', from: [0, 0], to: [1, 1] },
+    slot: { t: 'slot', x: 0, y: 0, w: 10, h: 10, label: 'x' },
+    video: { t: 'video', x: 0, y: 0, w: 10, h: 10, src: 'm.mp4' },
+    image: { t: 'image', x: 0, y: 0, w: 10, h: 10, src: 'm.svg' },
+  }
+  for (const [t, item] of Object.entries(VALID)) {
+    build([slide([item])], TAKES, THEME)
+    for (const key of ITEM_REQUIRED[t]) {
+      const broken = { ...item }; delete broken[key]
+      assert.throws(() => build([slide([broken])], TAKES, THEME), /is missing/, `${t} without ${key}`)
+    }
+  }
+})
+
+test('ITEM_KEYS covers every builder and every required key', () => {
+  assert.deepEqual(Object.keys(ITEM_KEYS).sort(), Object.keys(ITEM_REQUIRED).sort())
+  for (const [t, req] of Object.entries(ITEM_REQUIRED))
+    for (const key of req) assert.ok(ITEM_KEYS[t].includes(key), `${t}.${key}`)
 })
