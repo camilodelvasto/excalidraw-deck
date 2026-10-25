@@ -16,7 +16,7 @@ export function run(args, opts = {}) {
 test('no command prints usage and exits non-zero', () => {
   const r = run([])
   assert.notEqual(r.code, 0)
-  assert.match(r.err, /usage: excalidraw-deck dev \| build \| deploy \| check/)
+  assert.match(r.err, /usage: excalidraw-deck dev \| build \| deploy \| check \[dir\]/)
 })
 
 test('an unknown command prints usage and exits non-zero', () => {

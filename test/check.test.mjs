@@ -50,3 +50,16 @@ test('syntax error in slides.js: exit 1, stderr non-empty and stack-free', () =>
   for (const line of r.err.trim().split('\n'))
     assert.ok(!line.includes('    at '), `stack line leaked: ${line}`)
 })
+
+test('check [dir]: a path arg is validated, not cwd', () => {
+  // From repo root, `check examples/showcase` should pass
+  const r = run(['check', 'examples/showcase'], { cwd: WORKTREE })
+  assert.equal(r.code, 0)
+  assert.match(r.out, /deck: ok — \d+ slides in \d+ takes/)
+})
+
+test('check /nonexistent: exits 1 with no-slides.js error, not a cwd ok', () => {
+  const r = run(['check', '/nonexistent-deck-dir'])
+  assert.equal(r.code, 1)
+  assert.match(r.err, /no slides\.js/)
+})
