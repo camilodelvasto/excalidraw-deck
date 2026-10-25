@@ -27,7 +27,7 @@ test('npm pack size and contents', () => {
   assert(Array.isArray(files), 'pack data should have a files array')
 
   // Check that size is reasonable (no build artifacts)
-  assert(size < 500_000, `pack size ${size} should be less than 500 KB`)
+  assert(size < 500_000, `pack size ${size} should be less than 500,000 bytes`)
 
   // Extract paths from the files array
   const paths = files.map(f => f.path)
