@@ -89,3 +89,24 @@ test('assetCandidates: /media/ url returns one candidate under userDir', () => {
 test('assetCandidates: unrecognised prefix returns empty', () => {
   assert.deepEqual(assetCandidates('/elsewhere', U, F), [])
 })
+
+test('an unknown take key throws naming it', async () => {
+  await assert.rejects(
+    loadTakes(project(`export const takes = [{ name: 'one', nslides: [], slides: [{ name: 's', col: 0, items: [] }] }]\n`)),
+    /deck:.*unknown key "nslides" in take "one"/s,
+  )
+})
+
+test('an unknown slide key throws naming it', async () => {
+  await assert.rejects(
+    loadTakes(project(`export const takes = [{ name: 'one', slides: [{ name: 's', col: 0, items: [], vai: 'overview' }] }]\n`)),
+    /deck:.*unknown key "vai" in slide "s"/s,
+  )
+})
+
+test('via with an unrecognised value throws naming it', async () => {
+  await assert.rejects(
+    loadTakes(project(`export const takes = [{ name: 'one', slides: [{ name: 's', col: 0, items: [], via: 'overveiw' }] }]\n`)),
+    /deck:.*"via" must be "overview", got "overveiw"/s,
+  )
+})

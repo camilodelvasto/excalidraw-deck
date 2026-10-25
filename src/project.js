@@ -5,6 +5,9 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
+const TAKE_KEYS = new Set(['name', 'slides'])
+const SLIDE_KEYS = new Set(['name', 'col', 'via', 'items'])
+
 export async function loadTakes(userDir) {
   const file = join(userDir, 'slides.js')
   if (!existsSync(file))
@@ -15,6 +18,9 @@ export async function loadTakes(userDir) {
   for (const t of takes) {
     if (typeof t.name !== 'string' || !t.name || !Array.isArray(t.slides) || t.slides.length === 0)
       throw new Error('deck: each take needs a name and a non-empty slides array')
+    for (const key of Object.keys(t))
+      if (!TAKE_KEYS.has(key))
+        throw new Error(`deck: unknown key "${key}" in take "${t.name}" (known: ${[...TAKE_KEYS].join(', ')})`)
     for (const s of t.slides) {
       if (typeof s !== 'object' || s === null || typeof s.name !== 'string' || !s.name)
         throw new Error(`deck: take "${t.name}" has a slide missing a non-empty string name`)
@@ -22,6 +28,11 @@ export async function loadTakes(userDir) {
         throw new Error(`deck: take "${t.name}" slide "${s.name}" — col must be a finite number, got ${JSON.stringify(s.col)}`)
       if (!Array.isArray(s.items))
         throw new Error(`deck: take "${t.name}" slide "${s.name}" — items must be an array, got ${JSON.stringify(s.items)}`)
+      for (const key of Object.keys(s))
+        if (!SLIDE_KEYS.has(key))
+          throw new Error(`deck: unknown key "${key}" in slide "${s.name}" (known: ${[...SLIDE_KEYS].join(', ')})`)
+      if (s.via !== undefined && s.via !== 'overview')
+        throw new Error(`deck: slide "${s.name}" — "via" must be "overview", got ${JSON.stringify(s.via)}`)
     }
   }
   return takes

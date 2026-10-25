@@ -186,10 +186,11 @@ export interface ImageItem {
 /**
  * Any item that can appear in a slide. Discriminated by `t`.
  *
- * The `{ t: string }` tail member lets TypeScript accept items returned by untyped helper
- * functions (like those in examples/showcase/slides.js) without requiring a literal `t`.
- * Excess-property checking on direct object literals still fires because unknown keys
- * (e.g. `colr`) are not present in any member of the union.
+ * The `{ t: string }` tail lets TypeScript accept items returned by untyped helpers
+ * (e.g. examples/showcase/slides.js). Cost: a literal with an unknown `t` const, or one
+ * that matches a known `t` but is missing required keys, can be absorbed by the tail with
+ * 0 diagnostics. Unknown extra keys on literals and wrong value types for known keys still
+ * error. The runtime (`build`/`check`) catches everything regardless.
  */
 export type Item =
   | TextItem
