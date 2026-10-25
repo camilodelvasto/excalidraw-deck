@@ -126,3 +126,41 @@ test('ITEM_KEYS covers every builder and every required key', () => {
   for (const [t, req] of Object.entries(ITEM_REQUIRED))
     for (const key of req) assert.ok(ITEM_KEYS[t].includes(key), `${t}.${key}`)
 })
+
+test('unknown arrowhead throws naming it; valid start/end values build ok', () => {
+  assert.throws(
+    () => build([slide([{ t: 'arrow', from: [0, 0], to: [1, 1], start: 'dot' }])], TAKES, THEME),
+    /unknown arrowhead "dot"/,
+  )
+  // valid values should not throw
+  build([slide([{ t: 'arrow', from: [0, 0], to: [1, 1], start: 'none', end: 'arrow' }])], TAKES, THEME)
+  build([slide([{ t: 'arrow', from: [0, 0], to: [1, 1], start: 'arrow', end: 'none' }])], TAKES, THEME)
+})
+
+test('step must be a non-negative integer; step: 2.5 throws', () => {
+  assert.throws(
+    () => build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', step: 2.5 }])], TAKES, THEME),
+    /text item "step" must be a non-negative integer, got 2\.5/,
+  )
+  assert.throws(
+    () => build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', step: -1 }])], TAKES, THEME),
+    /text item "step" must be a non-negative integer/,
+  )
+  // step: 0 and step: 3 are valid
+  build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', step: 0 }])], TAKES, THEME)
+  build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', step: 3 }])], TAKES, THEME)
+})
+
+test('fade must be a number 0–100; fade: 150 throws', () => {
+  assert.throws(
+    () => build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', fade: 150 }])], TAKES, THEME),
+    /text item "fade" must be a number 0–100, got 150/,
+  )
+  assert.throws(
+    () => build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', fade: -5 }])], TAKES, THEME),
+    /text item "fade" must be a number 0–100/,
+  )
+  // fade: 0 and fade: 100 are valid
+  build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', fade: 0 }])], TAKES, THEME)
+  build([slide([{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', fade: 100 }])], TAKES, THEME)
+})

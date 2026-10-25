@@ -29,6 +29,7 @@ export const FILLS = { none: null, semi: 'solid', pattern: 'hachure' }
 export const DASHES = { draw: 'solid', dashed: 'dashed', dotted: 'dotted' }
 export const ALIGNS = { start: 'left', middle: 'center', end: 'right' }
 export const VALIGNS = { start: 'top', middle: 'middle', end: 'bottom' }
+export const HEADS = { none: null, arrow: 'arrow' }
 const INK = '#1e1e1e'
 
 // Every key each item type accepts. Unknown keys throw; media items omit `fade`
@@ -204,8 +205,8 @@ export function createBuild({ convert, fontFamily }) {
           strokeColor: color(item).stroke,
           strokeWidth: item.sw ?? 4,
           strokeStyle: dash(item),
-          startArrowhead: (item.start ?? 'none') === 'none' ? null : 'arrow',
-          endArrowhead: (item.end ?? 'arrow') === 'none' ? null : 'arrow',
+          startArrowhead: pick(HEADS, item.start ?? 'none', 'arrowhead'),
+          endArrowhead: pick(HEADS, item.end ?? 'arrow', 'arrowhead'),
           ...(item.text && { label: { text: item.text, fontSize: item.fs ?? 32, fontFamily: font(item), strokeColor: ink(item) } }),
         }
       },
@@ -248,6 +249,10 @@ export function createBuild({ convert, fontFamily }) {
           if (!ITEM_KEYS[item.t].includes(key))
             throw new Error(`deck: ${item.t} item has unknown key "${key}" (known: ${ITEM_KEYS[item.t].join(', ')})`)
         for (const key of ITEM_REQUIRED[item.t]) need(item, key)
+        if (item.step !== undefined && !(Number.isInteger(item.step) && item.step >= 0))
+          throw new Error(`deck: ${item.t} item "step" must be a non-negative integer, got ${item.step}`)
+        if (item.fade !== undefined && !(typeof item.fade === 'number' && item.fade >= 0 && item.fade <= 100))
+          throw new Error(`deck: ${item.t} item "fade" must be a number 0–100, got ${item.fade}`)
         if (item.t === 'video' || item.t === 'image') {
           media.push({
             id: `media-${i}-${j}`,

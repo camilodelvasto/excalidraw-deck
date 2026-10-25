@@ -5,7 +5,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { ITEM_KEYS, ITEM_REQUIRED, STOCK_COLORS, GEOS, FILLS, DASHES, ALIGNS, VALIGNS } from '../src/build.js'
+import { ITEM_KEYS, ITEM_REQUIRED, STOCK_COLORS, GEOS, FILLS, DASHES, ALIGNS, VALIGNS, HEADS } from '../src/build.js'
 import { ROLES } from '../src/config.js'
 
 const schema = JSON.parse(readFileSync(fileURLToPath(new URL('../schemas/slides.schema.json', import.meta.url)), 'utf8'))
@@ -26,12 +26,14 @@ function colorDef(s) {
 
 test('root is an array of takes, each take has name and slides required', () => {
   assert.equal(schema.type, 'array')
+  assert.equal(schema.minItems, 1, 'root takes array requires at least one take')
   const take = schema.items
   assert.equal(take.type, 'object')
   assert.equal(take.additionalProperties, false)
   assert.deepEqual([...take.required].sort(), ['name', 'slides'])
   assert.ok(take.properties.name)
   assert.ok(take.properties.slides)
+  assert.equal(take.properties.slides.minItems, 1, 'each take requires at least one slide')
 })
 
 test('slide has name, col, items required; via is const "overview"; additionalProperties false', () => {
@@ -52,7 +54,7 @@ test('every item variant mirrors ITEM_KEYS and ITEM_REQUIRED and rejects unknown
   }
 })
 
-test('enums match the builder: colors anyOf stock+string, fonts, fills, dashes, geos, aligns', () => {
+test('enums match the builder: colors anyOf stock+string, fonts, fills, dashes, geos, aligns, arrowheads', () => {
   const color = colorDef(schema)
   assert.deepEqual(color.anyOf[0].enum, Object.keys(STOCK_COLORS))
   assert.deepEqual(color.anyOf[1], { type: 'string' })
@@ -62,6 +64,7 @@ test('enums match the builder: colors anyOf stock+string, fonts, fills, dashes, 
   assert.deepEqual(schema.$defs.geo.enum, Object.keys(GEOS))
   assert.deepEqual(schema.$defs.align.enum, Object.keys(ALIGNS))
   assert.deepEqual(schema.$defs.valign.enum, Object.keys(VALIGNS))
+  assert.deepEqual(schema.$defs.arrowhead.enum, Object.keys(HEADS))
 })
 
 test('step is integer minimum 0; fade is number 0–100; from/to are arrays of exactly 2 numbers', () => {
