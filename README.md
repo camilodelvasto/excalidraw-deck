@@ -19,11 +19,14 @@ No React, no Vite, no index.html on your side. Copy `examples/showcase/` to star
 npx excalidraw-deck dev      # http://localhost:5173
 npx excalidraw-deck build    # dist/ — self-contained, serve anywhere
 npx excalidraw-deck deploy   # build, then force-push dist/ to your pages branch
+npx excalidraw-deck check    # validate slides.js + deck.yaml without serving
 ```
 
 ## Writing slides
 
 `slides.js` exports `takes`: named groups of slides, each take a block of frames on the canvas. Each slide is a 1920×1080 frame; item coordinates are frame-relative.
+
+The format is typed. Add `/** @type {import('excalidraw-deck').Takes} */` above the export and run `npm i -D excalidraw-deck` in the deck folder — the editor autocompletes every key. `schemas/slides.schema.json` describes the same contract for machines. `check` is the loop an agent runs after each edit.
 
 ```js
 export const takes = [
@@ -51,7 +54,7 @@ export const takes = [
 - Fonts (roles): `draw`, `display`, `sans`, `mono`, `hand`. Fills: `none`, `semi`, `pattern`. Dashes: `draw`, `dashed`, `dotted`.
 - Colors: Excalidraw's names (`black`, `grey`, `red`, `light-red`, `orange`, `yellow`, `green`, `light-green`, `blue`, `light-blue`, `violet`, `light-violet`) plus anything `deck.yaml` adds.
 - `sw` sets arrow/line stroke width; `angle` rotates text (degrees); `ink` colors a label on dark fills.
-- An unknown type, color, font, or config key throws. Nothing defaults silently.
+- An unknown type, color, font, item, or config key throws. Nothing defaults silently.
 
 Videos and images are an HTML layer over the canvas that follows the camera (Excalidraw has no video element). A video restarts when its slide lands, muted, plays once and holds its last frame.
 
