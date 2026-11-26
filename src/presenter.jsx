@@ -65,6 +65,7 @@ export function mount(rootEl, takes, config) {
   // Text is measured at build time, so the scene is built once fonts load. Until then, the
   // index from a first build serves navigation; it is replaced with the loaded scene's.
   let { index, labels, fades } = build(slides, takes, config.theme)
+  let builtIds = new Set() // ids the build put on the canvas; anything else was drawn live
 
   // A hash past the deck (an old link, a typo) clamps to the last slide instead of throwing —
   // a blank screen is worse than landing nearby.
@@ -298,6 +299,7 @@ export function mount(rootEl, takes, config) {
           index = built.index
           labels = built.labels
           fades = built.fades
+          builtIds = new Set(built.elements.map((el) => el.id))
           api.updateScene({ elements: built.elements, captureUpdate: CaptureUpdateAction.NEVER })
           reveal(api, posRef.current, false)
           requestAnimationFrame(() => fly(posRef.current.slide, false, () => cue(posRef.current.slide)))
@@ -306,6 +308,17 @@ export function mount(rootEl, takes, config) {
         // Without this the rejection is silent and the presenter sits on an unfinished scene.
         .catch((e) => setError(e.message ?? String(e)))
     }, [api]) // eslint-disable-line react-hooks/exhaustive-deps -- once, when the canvas is ready
+
+    // Drawings made in edit mode live only in this tab — the deck is slides.js. Warn
+    // before a reload or a closed tab silently discards them.
+    useEffect(() => {
+      if (!ready) return
+      const warn = (e) => {
+        if (api.getSceneElements().some((el) => !builtIds.has(el.id))) e.preventDefault()
+      }
+      window.addEventListener('beforeunload', warn)
+      return () => window.removeEventListener('beforeunload', warn)
+    }, [api, ready])
 
     // Presenting shows slides, not frames: no names, no outlines. Editing shows both.
     useEffect(() => {

@@ -73,7 +73,7 @@ Videos and images are an HTML layer over the canvas that follows the camera (Exc
 | e | edit: full Excalidraw mid-talk, draw live; "present" returns |
 | f | fullscreen (phones/tablets also get a button) |
 
-Position lives in the URL hash (`#slide.step`); a reload lands where you were. Drawings made in edit mode are not saved — the deck is `slides.js`.
+Position lives in the URL hash (`#slide.step`); a reload lands where you were. Drawings made in edit mode are not saved — the deck is `slides.js` — so leaving the page with live drawings on the canvas asks first.
 
 ## deck.yaml
 
