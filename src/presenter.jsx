@@ -65,7 +65,7 @@ export function mount(rootEl, takes, config) {
   // Text is measured at build time, so the scene is built once fonts load. Until then, the
   // index from a first build serves navigation; it is replaced with the loaded scene's.
   let { index, labels, fades } = build(slides, takes, config.theme)
-  let builtIds = new Set() // ids the build put on the canvas; anything else was drawn live
+  let builtIds = new Set()
 
   function readHash() {
     const m = location.hash.match(/^#(\d+)\.(\d+)$/)
@@ -306,7 +306,6 @@ export function mount(rootEl, takes, config) {
         .catch((e) => setError(e.message ?? String(e)))
     }, [api]) // eslint-disable-line react-hooks/exhaustive-deps -- once, when the canvas is ready
 
-    // Edit-mode drawings live only in this tab; warn before they are discarded.
     useEffect(() => {
       if (!ready) return
       const warn = (e) => {

@@ -21,7 +21,6 @@ export function publish({ distDir, deploy }) {
     for (const f of adapter.files(deploy)) writeFileSync(join(dir, f.path), f.content)
     git('init', '-b', branch)
     git('add', '-A')
-    // Pinned identity, no signing: deploy must work with no git identity configured.
     git('-c', 'user.name=deck', '-c', 'user.email=deck@localhost', '-c', 'commit.gpgsign=false', 'commit', '-m', 'deploy')
     git('push', '--force', '--', deploy.repo, `${branch}:${branch}`)
   } finally {

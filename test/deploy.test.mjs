@@ -7,8 +7,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { publish, adapters } from '../src/deploy/deploy.js'
 
-// publish pins its own identity and disables signing via -c flags; hide the machine's
-// git config so the tests see what a machine with no identity configured sees.
+// Hide the machine's git config: publish must work with no identity configured.
 process.env.GIT_CONFIG_GLOBAL = '/dev/null'
 process.env.GIT_CONFIG_SYSTEM = '/dev/null'
 

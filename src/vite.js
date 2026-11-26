@@ -70,7 +70,7 @@ function deckAssets(userDir) {
         try {
           url = decodeURIComponent(req.url.split('?')[0])
         } catch {
-          return next() // malformed escape (%zz)
+          return next()
         }
         // The user's own files win /fonts/ (theme swaps live there); Excalidraw's families fill the rest.
         // assetCandidates jails each path to its root — traversal attempts are dropped silently.
