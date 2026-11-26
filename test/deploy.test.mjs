@@ -7,9 +7,10 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { publish, adapters } from '../src/deploy/deploy.js'
 
-// publish uses the caller's git identity; give the test process one of its own.
-process.env.GIT_AUTHOR_NAME = process.env.GIT_COMMITTER_NAME = 'test'
-process.env.GIT_AUTHOR_EMAIL = process.env.GIT_COMMITTER_EMAIL = 'test@localhost'
+// publish pins its own identity and disables signing via -c flags; hide the machine's
+// git config so the tests see what a machine with no identity configured sees.
+process.env.GIT_CONFIG_GLOBAL = '/dev/null'
+process.env.GIT_CONFIG_SYSTEM = '/dev/null'
 
 const sh = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8' })
 
