@@ -180,7 +180,7 @@ export function mount(rootEl, takes, config) {
         el.pause()
         if (i !== slide) return
         el.currentTime = 0
-        el.play()
+        el.play().catch((e) => console.error(`deck: video ${m.src} did not play (autoplay policy?)`, e))
       })
     )
   }
@@ -197,6 +197,7 @@ export function mount(rootEl, takes, config) {
     const [editing, setEditing] = useState(false)
     const [camera, setCamera] = useState({ scrollX: 0, scrollY: 0, zoom: 1 })
     const [ready, setReady] = useState(false)
+    const [error, setError] = useState(null)
     // The media overlay follows the camera. onScrollChange misses programmatic moves; onChange sees them all.
     const onChange = useCallback((_, { scrollX, scrollY, zoom }) => {
       setCamera((c) => (c.scrollX === scrollX && c.scrollY === scrollY && c.zoom === zoom.value ? c : { scrollX, scrollY, zoom: zoom.value }))
@@ -288,19 +289,22 @@ export function mount(rootEl, takes, config) {
 
     useEffect(() => {
       if (!api) return
-      fontsLoaded().then((loaded) => {
-        FONT_NAMES.forEach((f, i) => {
-          if (!loaded[i].length) throw new Error(`deck: font "${f}" did not load`)
+      fontsLoaded()
+        .then((loaded) => {
+          FONT_NAMES.forEach((f, i) => {
+            if (!loaded[i].length) throw new Error(`deck: font "${f}" did not load`)
+          })
+          const built = build(slides, takes, config.theme)
+          index = built.index
+          labels = built.labels
+          fades = built.fades
+          api.updateScene({ elements: built.elements, captureUpdate: CaptureUpdateAction.NEVER })
+          reveal(api, posRef.current, false)
+          requestAnimationFrame(() => fly(posRef.current.slide, false, () => cue(posRef.current.slide)))
+          setReady(true)
         })
-        const built = build(slides, takes, config.theme)
-        index = built.index
-        labels = built.labels
-        fades = built.fades
-        api.updateScene({ elements: built.elements, captureUpdate: CaptureUpdateAction.NEVER })
-        reveal(api, posRef.current, false)
-        requestAnimationFrame(() => fly(posRef.current.slide, false, () => cue(posRef.current.slide)))
-        setReady(true)
-      })
+        // Without this the rejection is silent and the presenter sits on an unfinished scene.
+        .catch((e) => setError(e.message ?? String(e)))
     }, [api]) // eslint-disable-line react-hooks/exhaustive-deps -- once, when the canvas is ready
 
     // Presenting shows slides, not frames: no names, no outlines. Editing shows both.
@@ -387,6 +391,7 @@ export function mount(rootEl, takes, config) {
         <div className="media">
           <Media camera={camera} pos={pos} />
         </div>
+        {error && <div className="error">{error}</div>}
         {!editing && showFullscreen && (
           <button className="fullscreen" aria-label="fullscreen" onClick={toggleFullscreen}>
             ⛶
