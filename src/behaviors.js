@@ -16,6 +16,17 @@ export function keyAction(e) {
   return { type: 'swallow' }
 }
 
+// In edit mode the presenting grammar is off and keys belong to Excalidraw; `e` is the one
+// exception so edit toggles both ways. It must not fire while typing in a text element —
+// Excalidraw's text editor is a textarea. Shadows Excalidraw's eraser shortcut.
+export function exitsEdit(e) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return false
+  if (e.key !== 'e') return false
+  const t = e.target
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return false
+  return true
+}
+
 // Right-click means back because remote-mouse apps send a two-finger tap as one right-click,
 // sometimes with press+release as an instant pair — too fast for the hold timer.
 export function createTapGrammar({ holdMs, tapZones, viewportWidth, inert, onNext, onPrev }) {

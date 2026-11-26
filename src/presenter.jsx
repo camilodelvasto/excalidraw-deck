@@ -7,7 +7,7 @@
 //   3 Enter              jump to slide 3 (the number in the URL hash)
 //   + / −                zoom in / out; pinch and drag work too
 //   Escape               back to the current slide, framed
-//   e                    edit: Excalidraw UI on, draw live; the "present" button returns
+//   e                    edit: Excalidraw UI on, draw live; e again (or "present") returns
 //   f                    fullscreen
 // Position lives in the URL hash (#slide.step) so a reload lands where you were.
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -22,7 +22,7 @@ import {
 } from '@excalidraw/excalidraw'
 import '@excalidraw/excalidraw/index.css'
 import { createBuild, flattenTakes } from './build.js'
-import { createTapGrammar, fullscreenButtonVisible, keyAction } from './behaviors.js'
+import { createTapGrammar, exitsEdit, fullscreenButtonVisible, keyAction } from './behaviors.js'
 
 const { build } = createBuild({
   convert: (skeletons) => convertToExcalidrawElements(skeletons, { regenerateIds: false }),
@@ -313,6 +313,18 @@ export function mount(rootEl, takes, config) {
         captureUpdate: CaptureUpdateAction.NEVER,
       })
     }, [api, ready, editing])
+
+    useEffect(() => {
+      if (!ready || !editing) return
+      const onKey = (e) => {
+        if (!exitsEdit(e)) return
+        e.preventDefault()
+        e.stopPropagation()
+        present(true)
+      }
+      window.addEventListener('keydown', onKey, true)
+      return () => window.removeEventListener('keydown', onKey, true)
+    }, [ready, editing, present])
 
     useEffect(() => {
       if (!ready || editing) return

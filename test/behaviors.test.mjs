@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { setTimeout as sleep } from 'node:timers/promises'
-import { keyAction, createTapGrammar, fullscreenButtonVisible, TAP_SLOP } from '../src/behaviors.js'
+import { keyAction, exitsEdit, createTapGrammar, fullscreenButtonVisible, TAP_SLOP } from '../src/behaviors.js'
 
 const key = (k, mods = {}) => ({ key: k, metaKey: false, ctrlKey: false, altKey: false, ...mods })
 
@@ -19,6 +19,16 @@ test('keys map to actions; modifier chords belong to the browser', () => {
   assert.deepEqual(keyAction(key('f')), { type: 'fullscreen' })
   assert.deepEqual(keyAction(key('q')), { type: 'swallow' }, 'presenting owns the keyboard')
   assert.equal(keyAction(key('r', { metaKey: true })), null, "cmd-R stays the browser's")
+})
+
+test('in edit mode, e returns to presenting — unless typing in a text field', () => {
+  assert.equal(exitsEdit(key('e')), true)
+  assert.equal(exitsEdit({ ...key('e'), target: { tagName: 'DIV' } }), true)
+  assert.equal(exitsEdit({ ...key('e'), target: { tagName: 'TEXTAREA' } }), false, "Excalidraw's text editor is a textarea")
+  assert.equal(exitsEdit({ ...key('e'), target: { tagName: 'INPUT' } }), false)
+  assert.equal(exitsEdit({ ...key('e'), target: { tagName: 'DIV', isContentEditable: true } }), false)
+  assert.equal(exitsEdit(key('e', { ctrlKey: true })), false, "modifier chords stay the browser's")
+  assert.equal(exitsEdit(key('q')), false)
 })
 
 // A grammar wired to counters, with a short hold for test speed. Width 1000:
