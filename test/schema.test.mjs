@@ -1,5 +1,3 @@
-// The schema is a second declaration of the deck.yaml contract; this test pins it to the
-// loader so the two cannot drift. Structure is compared, not values the loader owns.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'

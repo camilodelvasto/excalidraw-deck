@@ -1,11 +1,5 @@
-// The input grammar, framework-free: the presenter owns WHAT happens, this module owns
-// WHICH gesture means what. Keys, tap/hold/drag, phone tap zones, fullscreen visibility.
-
 export const TAP_SLOP = 24 // a pointer that moved further is a drag (pan, pinch), not a tap
 
-// One key -> one action. Modifier chords stay the browser's. Digits accumulate for
-// type-number-Enter jumps (the presenter keeps the buffer). Unknown keys are swallowed:
-// presenting owns the keyboard - no stray Excalidraw shortcuts mid-talk.
 export function keyAction(e) {
   if (e.metaKey || e.ctrlKey || e.altKey) return null
   const k = e.key
@@ -22,12 +16,8 @@ export function keyAction(e) {
   return { type: 'swallow' }
 }
 
-// A remote mouse from stage, or a thumb on a phone. Zones (when on) are computed from the
-// live viewport width, so orientation doesn't matter: the left 35% means back on release,
-// the right 35% means next on release, the middle 30% keeps the full grammar - tap next,
-// hold holdMs back (fires at the threshold; release adds nothing). Right-click is always
-// back: remote-mouse apps send a two-finger tap as one, and it works even when the hardware
-// emits press+release as an instant pair. A drag past TAP_SLOP is a pan or pinch: cancelled.
+// Right-click means back because remote-mouse apps send a two-finger tap as one right-click,
+// sometimes with press+release as an instant pair — too fast for the hold timer.
 export function createTapGrammar({ holdMs, tapZones, viewportWidth, inert, onNext, onPrev }) {
   const tap = { down: null, timer: 0, held: false }
   const zone = (x) => {
@@ -74,7 +64,6 @@ export function createTapGrammar({ holdMs, tapZones, viewportWidth, inert, onNex
   }
 }
 
-// auto: phones and tablets get the button, laptops stay chrome-free.
 export function fullscreenButtonVisible(setting, coarsePointer) {
   if (setting === true) return true
   if (setting === false) return false

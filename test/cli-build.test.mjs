@@ -1,5 +1,4 @@
-// End-to-end over the real toolchain: a fixture project, the real CLI, a real Vite build.
-// Slow (~20–60s): it bundles Excalidraw once.
+// Slow (~20–60s): bundles Excalidraw once.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'

@@ -1,5 +1,3 @@
-// check command: runs the real builders in Node via a stub converter — validates a deck
-// without a browser.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdtempSync, writeFileSync } from 'node:fs'

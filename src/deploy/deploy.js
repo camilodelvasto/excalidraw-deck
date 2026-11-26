@@ -1,6 +1,3 @@
-// Smallest surface: shell out to git; credentials are the user's ssh-agent — no tokens, no
-// APIs, nothing stored. A pages branch is a build artifact: one commit, force-pushed;
-// history there is noise. Adapters declare forge quirks only.
 import { execFileSync } from 'node:child_process'
 import { cpSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'

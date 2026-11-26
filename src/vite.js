@@ -1,6 +1,3 @@
-// The CLI drives Vite through its JS API. root is the package's app/; the user's project
-// arrives through two virtual modules; fonts and media never touch a CDN — in dev they are
-// served from the Excalidraw package and the user's folder, a build copies them into dist/.
 import { createReadStream, existsSync, cpSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { extname, join, resolve, sep } from 'node:path'
@@ -34,8 +31,6 @@ export function mime(path) {
   return MIME[extname(path).toLowerCase()] ?? 'application/octet-stream'
 }
 
-// Dev-middleware path resolution: a url maps to candidate files, each jailed to its root.
-// A path that escapes its root (..) is dropped — not an error, just not served.
 export function assetCandidates(url, userDir, fontsDir) {
   const jailed = (root, rel) => {
     const p = resolve(root, rel)
@@ -46,7 +41,6 @@ export function assetCandidates(url, userDir, fontsDir) {
   return []
 }
 
-// virtual:deck-slides is the user's slides.js; virtual:deck-config is the merged deck.yaml.
 function deckVirtuals(userDir, config) {
   return {
     name: 'deck-virtuals',
@@ -72,8 +66,7 @@ function deckAssets(userDir) {
         } catch {
           return next()
         }
-        // The user's own files win /fonts/ (theme swaps live there); Excalidraw's families fill the rest.
-        // assetCandidates jails each path to its root — traversal attempts are dropped silently.
+        // The user's files are tried first for /fonts/ so a theme can override Excalidraw's faces.
         const candidates = assetCandidates(url, userDir, fonts)
         const hit = candidates.find((p) => existsSync(p))
         if (!hit) return next()

@@ -1,6 +1,3 @@
-// The user's project IS the contract: a folder with slides.js exporting non-empty takes,
-// and media files that exist for every video/image item. Violations throw before Vite runs,
-// so the user sees one line, not a bundler stack.
 import { existsSync } from 'node:fs'
 import { join, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'

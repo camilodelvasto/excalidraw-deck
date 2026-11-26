@@ -1,4 +1,3 @@
-// The deployer against local bare repos as fake remotes: real git, no network.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'

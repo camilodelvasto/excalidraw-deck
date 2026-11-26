@@ -1,4 +1,3 @@
-// The CLI contract: a wrong invocation prints the usage line and exits non-zero.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'

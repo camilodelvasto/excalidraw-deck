@@ -1,7 +1,5 @@
-// The excalidraw-deck slide format as TypeScript types.
-// Runtime enforcement lives in src/build.js (ITEM_KEYS, ITEM_REQUIRED); these types mirror it.
-// A deck is an array of Takes; each Take is a named block of Slides; each Slide is a 1920×1080
-// frame of Items. Coordinates are frame-relative.
+// The slide format as TypeScript types; mirrors the runtime contract in src/build.js
+// (ITEM_KEYS, ITEM_REQUIRED) — change one, change both.
 
 // ── Primitive enums ─────────────────────────────────────────────────────────
 
@@ -45,8 +43,6 @@ export type Align = 'start' | 'middle' | 'end'
 export type Arrowhead = 'none' | 'arrow'
 
 // ── Item interfaces ──────────────────────────────────────────────────────────
-// Keys mirror ITEM_KEYS exactly; required keys match ITEM_REQUIRED.
-// `t` is the discriminant; `step` and `fade` are shared optionals (except video/image omit fade).
 
 /** Free text element. */
 export interface TextItem {

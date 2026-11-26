@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-// excalidraw-deck: the user's project is data (slides.js + deck.yaml + media/);
-// this binary owns the toolchain. dev serves, build emits dist/, deploy publishes it.
 import { loadConfig } from '../src/config.js'
 import { loadTakes, checkMedia } from '../src/project.js'
 import { makeViteConfig } from '../src/vite.js'

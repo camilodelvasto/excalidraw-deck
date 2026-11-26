@@ -1,14 +1,5 @@
-// Deck → Excalidraw elements. One builder per item type; an unknown type, color or font
-// throws. Builders emit Excalidraw skeletons; the injected `convert` (Excalidraw's
-// convertToExcalidrawElements in production) measures text and binds labels. Every element
-// is locked: nothing to select or drag by accident. Videos and images are not canvas
-// elements; they come back as scene rects for the presenter's overlay.
-
-// One row by default: every flight is a clean horizontal hop, never across other slides.
 export const FRAME = { w: 1920, h: 1080, gap: 480, perRow: 99, takeGap: 1400 }
 
-// stroke: lines and text. fill: box fills and sticky notes. Excalidraw's own named palette;
-// a theme extends it (deck.yaml theme.colors).
 export const STOCK_COLORS = {
   black: { stroke: '#1e1e1e', fill: '#e9ecef' },
   grey: { stroke: '#868e96', fill: '#e9ecef' },
@@ -32,8 +23,7 @@ export const VALIGNS = { start: 'top', middle: 'middle', end: 'bottom' }
 export const HEADS = { none: null, arrow: 'arrow' }
 const INK = '#1e1e1e'
 
-// Every key each item type accepts. Unknown keys throw; media items omit `fade`
-// because the overlay never reads it. Consumed by the check command, JSON schema, and TS types.
+// Mirrored by schemas/slides.schema.json and deck.d.ts; tests pin the three together.
 export const ITEM_KEYS = {
   text:  ['t', 'x', 'y', 'fs', 'text', 'font', 'color', 'align', 'angle', 'w', 'step', 'fade'],
   box:   ['t', 'x', 'y', 'w', 'h', 'text', 'fs', 'geo', 'color', 'fill', 'dash', 'font', 'align', 'valign', 'ink', 'step', 'fade'],
@@ -46,7 +36,6 @@ export const ITEM_KEYS = {
   image: ['t', 'x', 'y', 'w', 'h', 'src', 'step'],
 }
 
-// Keys whose absence throws. Builders keep their own need() calls as internal reinforcement.
 export const ITEM_REQUIRED = {
   text: ['x', 'y', 'fs', 'text'],
   box: ['x', 'y', 'w', 'h', 'text'],
@@ -73,7 +62,6 @@ function pick(table, key, what) {
   return table[key]
 }
 
-// Each take is a block of rows; the next take starts below it, after room for its label.
 function takeOrigins(slides) {
   const origins = []
   let y = 0
@@ -91,8 +79,8 @@ function frameBounds(slide, origins) {
   return { x: col * (FRAME.w + FRAME.gap), y: origins[need(slide, 'take')] + row * (FRAME.h + FRAME.gap), w: FRAME.w, h: FRAME.h }
 }
 
-// The converter and font map are capabilities, not imports: the presenter wires Excalidraw's
-// real ones; tests wire a faithful fake (@excalidraw/excalidraw cannot load in plain node).
+// convert and fontFamily are injected: @excalidraw/excalidraw cannot load in plain Node,
+// so tests pass the stub from stub-convert.js.
 export function createBuild({ convert, fontFamily }) {
   const FONTS = {
     draw: fontFamily['Liberation Sans'],
@@ -111,7 +99,6 @@ export function createBuild({ convert, fontFamily }) {
     const color = (item) => pick(COLORS, item.color ?? 'black', 'color')
     const font = (item) => pick(FONTS, item.font ?? 'draw', 'font')
     const dash = (item) => pick(DASHES, item.dash ?? 'draw', 'dash')
-    // Label color: black ink unless the item says otherwise (`ink` — labels on dark fills).
     const ink = (item) => (item.ink ? pick(COLORS, item.ink, 'color').stroke : INK)
 
     const builders = {
@@ -158,7 +145,6 @@ export function createBuild({ convert, fontFamily }) {
         }
       },
 
-      // A sticky: a filled square, no outline.
       note(item) {
         const size = need(item, 'size')
         return {
@@ -175,7 +161,6 @@ export function createBuild({ convert, fontFamily }) {
         }
       },
 
-      // A full-bleed frame background: a slide with its own ground, independent of the canvas.
       plate(item) {
         return {
           type: 'rectangle',
@@ -221,7 +206,6 @@ export function createBuild({ convert, fontFamily }) {
     }
 
     const origins = takeOrigins(slides)
-    // A take's name sits above its block: seen in the overview, outside every slide.
     const skeletons = takes.map((t, k) => ({
       type: 'text',
       id: `take-${k}`,
@@ -243,7 +227,6 @@ export function createBuild({ convert, fontFamily }) {
       slide.items.forEach((item, j) => {
         const step = item.step ?? 0
         while (steps.length <= step) steps.push([])
-        // Unknown type check first; then closed-key and required-key checks per ITEM_KEYS/ITEM_REQUIRED.
         if (!ITEM_KEYS[item.t]) throw new Error(`deck: unknown item type "${item.t}" in slide "${slide.name}"`)
         for (const key of Object.keys(item))
           if (!ITEM_KEYS[item.t].includes(key))
@@ -286,7 +269,8 @@ export function createBuild({ convert, fontFamily }) {
     for (const [id, x, w] of centered) byId.get(id).x = x + (w - byId.get(id).width) / 2
     // The converter shrinks a frame to hug its children; slides are fixed 1920×1080.
     for (const { frameId, bounds } of index) Object.assign(byId.get(frameId), { x: bounds.x, y: bounds.y, width: bounds.w, height: bounds.h })
-    // Labels are elements of their own; each reveals with its container (and at its opacity).
+    // The converter split labels into their own elements; containerId links one back to
+    // its item, so a label reveals with (and at the opacity of) its container.
     const fades = new Map()
     for (const el of elements) {
       const ref = owner.get(el.id) ?? owner.get(el.containerId)

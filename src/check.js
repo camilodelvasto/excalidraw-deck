@@ -1,4 +1,3 @@
-// check: validates a deck through the real builders without a browser.
 import { loadTakes, checkMedia } from './project.js'
 import { loadConfig } from './config.js'
 import { createBuild, flattenTakes } from './build.js'

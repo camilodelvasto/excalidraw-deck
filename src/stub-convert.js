@@ -1,6 +1,5 @@
-// A faithful stand-in for convertToExcalidrawElements' CONTRACT: measures text, keeps ids,
-// splits a `label` into a bound text element with containerId. Tests assert contracts the
-// deck format promises, not Excalidraw's numbers.
+// Node-side stand-in for convertToExcalidrawElements: measures text, keeps ids, splits a
+// `label` into a bound text element with containerId, like the real converter does.
 export function stubConvert(skeletons) {
   const out = []
   for (const s of skeletons) {

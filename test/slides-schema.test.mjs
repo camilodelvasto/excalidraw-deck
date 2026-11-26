@@ -1,6 +1,3 @@
-// slides.schema.json is a second declaration of the slide-item contract; this test pins it
-// to src/build.js exports so the two cannot drift. Structure is compared, not values the
-// builder owns.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'

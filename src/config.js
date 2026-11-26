@@ -1,5 +1,3 @@
-// deck.yaml → one config object. Defaults live HERE and nowhere else; the merge is
-// explicit; an unknown key throws. Absence of deck.yaml IS the declared default deck.
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parse } from 'yaml'

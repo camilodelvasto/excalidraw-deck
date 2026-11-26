@@ -77,7 +77,6 @@ export function mount(rootEl, takes, config) {
   // Every slide before the current one is complete; the current one shows up to `step`.
   const shownUpTo = (pos, i) => (i < pos.slide ? Infinity : i === pos.slide ? pos.step : 0)
 
-  // An element reveals to its declared opacity (an item's `fade`, usually 100).
   function opacities(pos) {
     const out = new Map()
     index.forEach((s, i) => s.steps.forEach((ids, k) => ids.forEach((id) => out.set(id, k <= shownUpTo(pos, i) ? fades.get(id) : 0))))
@@ -111,7 +110,6 @@ export function mount(rootEl, takes, config) {
   let flying = 0
   let legs = 0 // each fly() is a leg; a newer one cancels the pending parts of the old
 
-  // Fit a scene rect to the viewport: exact, centered, eased. Zoom interpolates in log space.
   function moveCamera(api, b, { factor = 1, animate }) {
     const s = api.getAppState()
     const z1 = Math.min(s.width / b.w, s.height / b.h) * factor
@@ -133,7 +131,6 @@ export function mount(rootEl, takes, config) {
     tick()
   }
 
-  // The whole canvas, or one take's block.
   function talkBounds(take) {
     const xs = take === undefined ? [...index.map((s) => s.bounds), ...labels] : index.filter((s) => s.take === take).map((s) => s.bounds)
     const x = Math.min(...xs.map((b) => b.x))
@@ -146,7 +143,6 @@ export function mount(rootEl, takes, config) {
     return i === -1 ? null : i
   }
 
-  // Videos and images sit over the canvas in screen space and follow the camera.
   function Media({ camera, pos }) {
     return index.flatMap((s, i) =>
       s.media.map((m) => {
@@ -170,7 +166,6 @@ export function mount(rootEl, takes, config) {
     )
   }
 
-  // A slide's videos restart when it lands; every other video stops. Images just sit there.
   function cue(slide) {
     index.forEach((s, i) =>
       s.media.forEach((m) => {
@@ -202,8 +197,6 @@ export function mount(rootEl, takes, config) {
       setCamera((c) => (c.scrollX === scrollX && c.scrollY === scrollY && c.zoom === zoom.value ? c : { scrollX, scrollY, zoom: zoom.value }))
     }, [])
 
-    // Camera to the slide's frame. `land` runs when the camera arrives. A slide marked
-    // via: 'overview' flies out to the whole talk first — only when arriving, never on a step.
     const fly = useCallback(
       (slide, animate, land, arriving = false) => {
         const target = index[slide]
@@ -254,7 +247,6 @@ export function mount(rootEl, takes, config) {
       } else fly(posRef.current.slide, true)
     }, [api, fly])
 
-    // Zoom about the viewport center.
     const zoomBy = useCallback(
       (factor) => {
         flying++ // a zoom cancels any camera move in flight
@@ -276,7 +268,6 @@ export function mount(rootEl, takes, config) {
       (on) => {
         setEditing(!on)
         if (!on) return
-        // Back from editing: present the frame on screen, or the one you left.
         const s = api.getAppState()
         const center = viewportCoordsToSceneCoords({ clientX: s.offsetLeft + s.width / 2, clientY: s.offsetTop + s.height / 2 }, s)
         const here = frameAt(center)
@@ -315,7 +306,6 @@ export function mount(rootEl, takes, config) {
       return () => window.removeEventListener('beforeunload', warn)
     }, [api, ready])
 
-    // Presenting shows slides, not frames: no names, no outlines. Editing shows both.
     useEffect(() => {
       if (!ready) return
       api.updateScene({
@@ -346,7 +336,6 @@ export function mount(rootEl, takes, config) {
         e.preventDefault()
         e.stopPropagation()
       }
-      // In overview, a click on a frame jumps there.
       const onPointer = (e) => {
         if (!overviewRef.current) return
         const slide = frameAt(viewportCoordsToSceneCoords(e, api.getAppState()))

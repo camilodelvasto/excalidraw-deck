@@ -1,7 +1,3 @@
-// Double-pin: TypeScript excess-property checks AND the real builder both run on each fixture.
-// valid-full must produce 0 diagnostics and build without throwing.
-// bad-key must produce at least one diagnostic naming the bad key AND build must throw naming it.
-
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
