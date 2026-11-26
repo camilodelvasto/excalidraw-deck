@@ -67,8 +67,6 @@ export function mount(rootEl, takes, config) {
   let { index, labels, fades } = build(slides, takes, config.theme)
   let builtIds = new Set() // ids the build put on the canvas; anything else was drawn live
 
-  // A hash past the deck (an old link, a typo) clamps to the last slide instead of throwing —
-  // a blank screen is worse than landing nearby.
   function readHash() {
     const m = location.hash.match(/^#(\d+)\.(\d+)$/)
     if (!m) return { slide: 0, step: 0 }
@@ -305,12 +303,10 @@ export function mount(rootEl, takes, config) {
           requestAnimationFrame(() => fly(posRef.current.slide, false, () => cue(posRef.current.slide)))
           setReady(true)
         })
-        // Without this the rejection is silent and the presenter sits on an unfinished scene.
         .catch((e) => setError(e.message ?? String(e)))
     }, [api]) // eslint-disable-line react-hooks/exhaustive-deps -- once, when the canvas is ready
 
-    // Drawings made in edit mode live only in this tab — the deck is slides.js. Warn
-    // before a reload or a closed tab silently discards them.
+    // Edit-mode drawings live only in this tab; warn before they are discarded.
     useEffect(() => {
       if (!ready) return
       const warn = (e) => {
@@ -338,7 +334,7 @@ export function mount(rootEl, takes, config) {
         else if (action.type === 'enter' && typedRef.current) {
           const slide = Number(typedRef.current)
           typedRef.current = ''
-          if (index[slide]) goto({ slide, step: 0 }) // a number past the deck is ignored, not a crash
+          if (index[slide]) goto({ slide, step: 0 })
         } else if (action.type === 'next') next()
         else if (action.type === 'prev') prev()
         else if (action.type === 'overview') overview()

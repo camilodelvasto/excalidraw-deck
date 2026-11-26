@@ -65,7 +65,6 @@ test('a pages branch is a build artifact: a second publish force-pushes, history
 })
 
 test('a repo that looks like a git option is pushed to as a path, not parsed as an option', () => {
-  // The "--" guard makes git treat this as a (nonexistent) remote path; it must throw, not act on the flag.
   assert.throws(() => publish({ distDir: dist(), deploy: { remote: 'github-pages', repo: '--receive-pack=true', branch: null, cname: null } }), /does not appear to be a git repository|--receive-pack/)
 })
 

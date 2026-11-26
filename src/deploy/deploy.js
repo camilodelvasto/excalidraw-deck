@@ -21,8 +21,7 @@ export function publish({ distDir, deploy }) {
     for (const f of adapter.files(deploy)) writeFileSync(join(dir, f.path), f.content)
     git('init', '-b', branch)
     git('add', '-A')
-    // The commit is an artifact, not authored work: pin an identity and skip signing so
-    // deploy works on machines with no user.name/email and never triggers signing hooks.
+    // Pinned identity, no signing: deploy must work with no git identity configured.
     git('-c', 'user.name=deck', '-c', 'user.email=deck@localhost', '-c', 'commit.gpgsign=false', 'commit', '-m', 'deploy')
     git('push', '--force', '--', deploy.repo, `${branch}:${branch}`)
   } finally {

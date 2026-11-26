@@ -39,8 +39,7 @@ export async function loadTakes(userDir) {
 }
 
 export function checkMedia(userDir, takes) {
-  // Only media/ ships with a build: a src elsewhere (or escaping via ..) would pass the
-  // existence check in dev and then 404 after deploy.
+  // Only media/ ships with a build; a src elsewhere would 404 after deploy.
   const mediaRoot = resolve(userDir, 'media')
   for (const t of takes)
     for (const s of t.slides)

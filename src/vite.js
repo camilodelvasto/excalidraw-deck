@@ -30,7 +30,6 @@ const MIME = {
   '.gif': 'image/gif',
 }
 
-// An unknown extension (media/notes.txt) is served as a byte stream, not a 500.
 export function mime(path) {
   return MIME[extname(path).toLowerCase()] ?? 'application/octet-stream'
 }
@@ -71,7 +70,7 @@ function deckAssets(userDir) {
         try {
           url = decodeURIComponent(req.url.split('?')[0])
         } catch {
-          return next() // a malformed escape (%zz) is not ours to serve
+          return next() // malformed escape (%zz)
         }
         // The user's own files win /fonts/ (theme swaps live there); Excalidraw's families fill the rest.
         // assetCandidates jails each path to its root — traversal attempts are dropped silently.
