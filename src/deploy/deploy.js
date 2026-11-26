@@ -22,7 +22,7 @@ export function publish({ distDir, deploy }) {
     git('init', '-b', branch)
     git('add', '-A')
     git('commit', '-m', 'deploy')
-    git('push', '--force', deploy.repo, `${branch}:${branch}`)
+    git('push', '--force', '--', deploy.repo, `${branch}:${branch}`)
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }

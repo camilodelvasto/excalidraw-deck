@@ -34,6 +34,12 @@ function str(value, where) {
   return value
 }
 
+// deploy values reach the git command line; a leading "-" would read as a git option.
+function gitSafe(value, where) {
+  if (str(value, where).startsWith('-')) fail(`"${where}" must not start with "-", got ${JSON.stringify(value)}`)
+  return value
+}
+
 function isMapping(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
 }
@@ -89,8 +95,8 @@ function mergeDeploy(raw) {
   if (!('repo' in raw)) fail('"deploy.repo" is required (the git remote the pages branch is pushed to)')
   return {
     remote: raw.remote,
-    repo: str(raw.repo, 'deploy.repo'),
-    branch: 'branch' in raw ? str(raw.branch, 'deploy.branch') : null, // null → the adapter's convention
+    repo: gitSafe(raw.repo, 'deploy.repo'),
+    branch: 'branch' in raw ? gitSafe(raw.branch, 'deploy.branch') : null, // null → the adapter's convention
     cname: 'cname' in raw && raw.cname !== null ? str(raw.cname, 'deploy.cname') : null,
   }
 }

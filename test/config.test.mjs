@@ -63,6 +63,11 @@ test('deploy requires remote and repo; branch and cname default to null', () => 
   assert.throws(() => mergeConfig({ deploy: { remote: 'github-pages', repo: 'x', token: 'no' } }), /deploy\.token/)
 })
 
+test('deploy.repo and deploy.branch starting with "-" throw (git would read them as options)', () => {
+  assert.throws(() => mergeConfig({ deploy: { remote: 'github-pages', repo: '--receive-pack=evil' } }), /deploy\.repo.*must not start with "-"/)
+  assert.throws(() => mergeConfig({ deploy: { remote: 'github-pages', repo: 'git@github.com:u/r.git', branch: '-b' } }), /deploy\.branch.*must not start with "-"/)
+})
+
 test('a deck.yaml that is not valid YAML throws, naming the file', () => {
   const dir = dirWith('theme: [unclosed')
   assert.throws(() => loadConfig(dir), /deck\.yaml: not valid YAML/)
