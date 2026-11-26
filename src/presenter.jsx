@@ -66,11 +66,12 @@ export function mount(rootEl, takes, config) {
   // index from a first build serves navigation; it is replaced with the loaded scene's.
   let { index, labels, fades } = build(slides, takes, config.theme)
 
+  // A hash past the deck (an old link, a typo) clamps to the last slide instead of throwing —
+  // a blank screen is worse than landing nearby.
   function readHash() {
     const m = location.hash.match(/^#(\d+)\.(\d+)$/)
     if (!m) return { slide: 0, step: 0 }
-    const slide = Number(m[1])
-    if (!index[slide]) throw new Error(`deck: no slide ${slide} (deck has ${index.length})`)
+    const slide = Math.min(Number(m[1]), index.length - 1)
     return { slide, step: Math.min(Number(m[2]), index[slide].steps.length - 1) }
   }
 
@@ -320,8 +321,7 @@ export function mount(rootEl, takes, config) {
         else if (action.type === 'enter' && typedRef.current) {
           const slide = Number(typedRef.current)
           typedRef.current = ''
-          if (!index[slide]) throw new Error(`deck: no slide ${slide} (deck has ${index.length})`)
-          goto({ slide, step: 0 })
+          if (index[slide]) goto({ slide, step: 0 }) // a number past the deck is ignored, not a crash
         } else if (action.type === 'next') next()
         else if (action.type === 'prev') prev()
         else if (action.type === 'overview') overview()
