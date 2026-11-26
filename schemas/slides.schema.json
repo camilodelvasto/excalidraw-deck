@@ -187,7 +187,7 @@
                       "y": { "type": "number" },
                       "w": { "type": "number" },
                       "h": { "type": "number" },
-                      "src": { "type": "string" },
+                      "src": { "type": "string", "pattern": "^media/" },
                       "step": { "$ref": "#/$defs/step" }
                     }
                   },
@@ -201,7 +201,7 @@
                       "y": { "type": "number" },
                       "w": { "type": "number" },
                       "h": { "type": "number" },
-                      "src": { "type": "string" },
+                      "src": { "type": "string", "pattern": "^media/" },
                       "step": { "$ref": "#/$defs/step" }
                     }
                   }

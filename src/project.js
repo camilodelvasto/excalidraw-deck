@@ -2,7 +2,7 @@
 // and media files that exist for every video/image item. Violations throw before Vite runs,
 // so the user sees one line, not a bundler stack.
 import { existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const TAKE_KEYS = new Set(['name', 'slides'])
@@ -39,9 +39,16 @@ export async function loadTakes(userDir) {
 }
 
 export function checkMedia(userDir, takes) {
+  // Only media/ ships with a build: a src elsewhere (or escaping via ..) would pass the
+  // existence check in dev and then 404 after deploy.
+  const mediaRoot = resolve(userDir, 'media')
   for (const t of takes)
     for (const s of t.slides)
-      for (const item of s.items ?? [])
-        if ((item.t === 'video' || item.t === 'image') && !existsSync(join(userDir, item.src)))
+      for (const item of s.items ?? []) {
+        if (item.t !== 'video' && item.t !== 'image') continue
+        if (typeof item.src !== 'string' || !item.src.startsWith('media/') || !resolve(userDir, item.src).startsWith(mediaRoot + sep))
+          throw new Error(`deck: slide "${s.name}" — src must point into media/ inside the deck folder, got ${JSON.stringify(item.src)}`)
+        if (!existsSync(join(userDir, item.src)))
           throw new Error(`deck: slide "${s.name}" uses ${item.src}, but ${join(userDir, item.src)} does not exist`)
+      }
 }

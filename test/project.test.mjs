@@ -61,6 +61,24 @@ test('a media item pointing at a missing file throws, naming the slide and the p
   checkMedia(dir, takes) // present → no throw
 })
 
+test('a media src outside media/ throws, even if the file exists', async () => {
+  const dir = project(`export const takes = [{ name: 'one', slides: [
+    { name: 'demo', col: 0, items: [{ t: 'image', x: 0, y: 0, w: 100, h: 100, src: 'elsewhere/pic.png' }] },
+  ] }]\n`)
+  mkdirSync(join(dir, 'elsewhere'))
+  writeFileSync(join(dir, 'elsewhere', 'pic.png'), 'x')
+  const takes = await loadTakes(dir)
+  assert.throws(() => checkMedia(dir, takes), /slide "demo".*must point into media\//s)
+})
+
+test('a media src escaping media/ with .. throws', async () => {
+  const dir = project(`export const takes = [{ name: 'one', slides: [
+    { name: 'demo', col: 0, items: [{ t: 'video', x: 0, y: 0, w: 100, h: 100, src: 'media/../../etc/passwd' }] },
+  ] }]\n`)
+  const takes = await loadTakes(dir)
+  assert.throws(() => checkMedia(dir, takes), /slide "demo".*must point into media\//s)
+})
+
 // assetCandidates: pure path math, no fs access needed
 const U = '/tmp/u'
 const F = '/tmp/f'

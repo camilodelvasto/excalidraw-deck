@@ -168,7 +168,7 @@ export interface VideoItem {
   y: number
   w: number
   h: number
-  src: string
+  src: `media/${string}`
   step?: number
 }
 
@@ -179,7 +179,7 @@ export interface ImageItem {
   y: number
   w: number
   h: number
-  src: string
+  src: `media/${string}`
   step?: number
 }
 
