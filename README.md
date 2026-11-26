@@ -15,6 +15,8 @@ my-talk/
 
 No React, no Vite, no index.html on your side. Copy `examples/showcase/` to start — it is the scaffold.
 
+`slides.js` is code: `dev`, `build`, and `check` all execute it. Only run decks you trust, the same rule as for any project you `npm install` in.
+
 ```
 npx excalidraw-deck dev      # http://localhost:5173
 npx excalidraw-deck build    # dist/ — self-contained, serve anywhere
@@ -119,6 +121,10 @@ deploy:
 
 - Presenting hides Excalidraw's UI via its internal class names, and the font swap relies on registration order. Both can break on an Excalidraw upgrade, so the dependency is pinned to a compatible minor (`^0.18.1`). Bumping it means re-checking: UI hidden while presenting, themed fonts rendering.
 - `dev`/`build` keep a Vite cache in `.cache/` inside your deck folder — gitignore it.
+
+## Contributing
+
+Issues and PRs are welcome. `npm test` runs the whole suite (no browser needed); the format is deliberately small, so an issue describing the slide you could not write is as useful as code.
 
 ## License
 
