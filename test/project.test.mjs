@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { loadTakes, checkMedia } from '../src/project.js'
-import { assetCandidates } from '../src/vite.js'
+import { assetCandidates, mime } from '../src/vite.js'
 
 const project = (slidesJs) => {
   const dir = mkdtempSync(join(tmpdir(), 'deck-project-'))
@@ -106,6 +106,11 @@ test('assetCandidates: /media/ url returns one candidate under userDir', () => {
 
 test('assetCandidates: unrecognised prefix returns empty', () => {
   assert.deepEqual(assetCandidates('/elsewhere', U, F), [])
+})
+
+test('mime: known extensions map, unknown ones fall back to a byte stream', () => {
+  assert.equal(mime('/x/clip.mp4'), 'video/mp4')
+  assert.equal(mime('/x/notes.txt'), 'application/octet-stream')
 })
 
 test('an unknown take key throws naming it', async () => {

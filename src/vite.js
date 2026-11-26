@@ -30,10 +30,9 @@ const MIME = {
   '.gif': 'image/gif',
 }
 
-function mime(path) {
-  const type = MIME[extname(path).toLowerCase()]
-  if (!type) throw new Error(`deck: no content type for "${extname(path)}" (${path})`)
-  return type
+// An unknown extension (media/notes.txt) is served as a byte stream, not a 500.
+export function mime(path) {
+  return MIME[extname(path).toLowerCase()] ?? 'application/octet-stream'
 }
 
 // Dev-middleware path resolution: a url maps to candidate files, each jailed to its root.
@@ -68,7 +67,12 @@ function deckAssets(userDir) {
     name: 'deck-assets',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        const url = decodeURIComponent(req.url.split('?')[0])
+        let url
+        try {
+          url = decodeURIComponent(req.url.split('?')[0])
+        } catch {
+          return next() // a malformed escape (%zz) is not ours to serve
+        }
         // The user's own files win /fonts/ (theme swaps live there); Excalidraw's families fill the rest.
         // assetCandidates jails each path to its root — traversal attempts are dropped silently.
         const candidates = assetCandidates(url, userDir, fonts)
