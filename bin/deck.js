@@ -16,16 +16,16 @@ async function checkedProject() {
 
 const commands = {
   async dev() {
-    const { userDir, config } = await checkedProject()
+    const { userDir } = await checkedProject()
     const { createServer } = await import('vite')
-    const server = await createServer(makeViteConfig({ userDir, config }))
+    const server = await createServer(makeViteConfig({ userDir, command: 'dev' }))
     await server.listen()
     server.printUrls()
   },
   async build() {
-    const { userDir, config } = await checkedProject()
+    const { userDir } = await checkedProject()
     const { build } = await import('vite')
-    await build(makeViteConfig({ userDir, config }))
+    await build(makeViteConfig({ userDir, command: 'build' }))
   },
   async check() {
     const dir = process.argv[3] ? resolve(process.argv[3]) : process.cwd()
@@ -38,7 +38,7 @@ const commands = {
     if (!config.deploy)
       throw new Error('deck: deck.yaml has no deploy section — add deploy: { remote, repo } (see the README)')
     const { build } = await import('vite')
-    await build(makeViteConfig({ userDir, config }))
+    await build(makeViteConfig({ userDir, command: 'build' }))
     const { publish } = await import('../src/deploy/deploy.js')
     publish({ distDir: join(userDir, 'dist'), deploy: config.deploy })
     console.log(`deck: pushed dist/ to ${config.deploy.repo}`)

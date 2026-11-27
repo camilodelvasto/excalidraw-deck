@@ -3,6 +3,7 @@ import { createRequire } from 'node:module'
 import { extname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
+import { loadConfig } from './config.js'
 
 const PKG = fileURLToPath(new URL('..', import.meta.url))
 const require = createRequire(import.meta.url)
@@ -41,7 +42,8 @@ export function assetCandidates(url, userDir, fontsDir) {
   return []
 }
 
-function deckVirtuals(userDir, config) {
+function deckVirtuals(userDir) {
+  const file = join(userDir, 'deck.yaml')
   return {
     name: 'deck-virtuals',
     resolveId(id) {
@@ -49,7 +51,17 @@ function deckVirtuals(userDir, config) {
       if (id === 'virtual:deck-config') return '\0deck-config'
     },
     load(id) {
-      if (id === '\0deck-config') return `export default ${JSON.stringify(config)}`
+      if (id === '\0deck-config') return `export default ${JSON.stringify(loadConfig(userDir))}`
+    },
+    // A deck.yaml edit reloads the page with the new config.
+    configureServer(server) {
+      server.watcher.add(file)
+      server.watcher.on('all', (event, path) => {
+        if (path !== file) return
+        const mod = server.moduleGraph.getModuleById('\0deck-config')
+        if (mod) server.moduleGraph.invalidateModule(mod)
+        server.ws.send({ type: 'full-reload' })
+      })
     },
   }
 }
@@ -82,14 +94,16 @@ function deckAssets(userDir) {
   }
 }
 
-export function makeViteConfig({ userDir, config }) {
+// command is 'dev' or 'build'; each gets its own cache so a build run mid-presentation
+// cannot rewrite the optimized-deps chunks a live dev server is serving.
+export function makeViteConfig({ userDir, command }) {
   return {
     configFile: false,
     root: join(PKG, 'app'),
     base: './',
     publicDir: false,
-    cacheDir: join(userDir, '.cache', 'excalidraw-deck'),
-    plugins: [react(), deckVirtuals(userDir, config), deckAssets(userDir)],
+    cacheDir: join(userDir, '.cache', 'excalidraw-deck', command),
+    plugins: [react(), deckVirtuals(userDir), deckAssets(userDir)],
     server: { fs: { allow: [PKG, userDir] } },
     build: { outDir: join(userDir, 'dist'), emptyOutDir: true },
   }

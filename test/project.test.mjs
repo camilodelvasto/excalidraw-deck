@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { loadTakes, checkMedia } from '../src/project.js'
-import { assetCandidates, mime } from '../src/vite.js'
+import { assetCandidates, makeViteConfig, mime } from '../src/vite.js'
 
 const project = (slidesJs) => {
   const dir = mkdtempSync(join(tmpdir(), 'deck-project-'))
@@ -106,6 +106,21 @@ test('assetCandidates: /media/ url returns one candidate under userDir', () => {
 
 test('assetCandidates: unrecognised prefix returns empty', () => {
   assert.deepEqual(assetCandidates('/elsewhere', U, F), [])
+})
+
+test('dev and build use separate Vite caches — a build cannot corrupt a running dev server', () => {
+  const dev = makeViteConfig({ userDir: '/tmp/u', command: 'dev' })
+  const build = makeViteConfig({ userDir: '/tmp/u', command: 'build' })
+  assert.notEqual(dev.cacheDir, build.cacheDir)
+})
+
+test('the deck-config virtual reads deck.yaml fresh on every load', () => {
+  const dir = project(ONE_TAKE)
+  writeFileSync(join(dir, 'deck.yaml'), 'theme: { background: "#111111" }\n')
+  const virt = makeViteConfig({ userDir: dir, command: 'dev' }).plugins.find((p) => p.name === 'deck-virtuals')
+  assert.match(virt.load('\0deck-config'), /#111111/)
+  writeFileSync(join(dir, 'deck.yaml'), 'theme: { background: "#222222" }\n')
+  assert.match(virt.load('\0deck-config'), /#222222/)
 })
 
 test('mime: known extensions map, unknown ones fall back to a byte stream', () => {

@@ -15,11 +15,13 @@ Security and robustness release.
 - An out-of-range URL hash (`#99.0` on a 10-slide deck) clamps to the last slide instead of blanking the page; typing a nonexistent slide number is ignored.
 - Font-load failures show an error banner instead of silently leaving the deck unstyled; blocked video autoplay is logged.
 - The dev server serves unknown file types as byte streams and survives malformed URLs instead of returning 500.
+- `dev` and `build` no longer share a Vite cache — running `build` while a dev server was serving the same deck corrupted its dependency cache (blank page until restart).
 - `deploy` works on machines with no git identity and never triggers signing hooks.
 - `e` toggles edit mode both ways; before, entering edit mode left no keyboard way back.
 
 ### Added
 - Editing the URL hash navigates in place — a deck is scriptable without page reloads.
+- deck.yaml edits apply while `dev` runs: the page reloads with the new config.
 - Leaving the page with unsaved live drawings on the canvas asks first.
 - Browser smoke test (`npm run test:browser`): fonts load, UI hidden while presenting, `e` toggles — the tripwire for Excalidraw bumps.
 - CI: audit gate with a reasoned allowlist, CodeQL, Dependabot, read-only tokens.

@@ -113,7 +113,7 @@ behaviors:
 deploy: null               # deploy is explicit; see below
 ```
 
-`schemas/deck.schema.json` validates a deck.yaml without running anything.
+`schemas/deck.schema.json` validates a deck.yaml without running anything. Editing deck.yaml while `dev` is running reloads the page with the new config.
 
 Font swap example — `display` titles in Lora, everything else stock:
 
