@@ -62,6 +62,21 @@ test('a pages branch is a build artifact: a second publish force-pushes, history
   assert.match(file(remote, 'gh-pages', 'index.html'), /deck v2/)
 })
 
+test('a branch whose history is not a previous deploy is refused and left untouched', () => {
+  const remote = fakeRemote()
+  const work = mkdtempSync(join(tmpdir(), 'deck-seed-'))
+  sh(work, 'init', '-b', 'gh-pages')
+  writeFileSync(join(work, 'README.md'), 'source')
+  sh(work, 'add', '-A')
+  sh(work, '-c', 'user.name=t', '-c', 'user.email=t@localhost', 'commit', '-m', 'real work, not an artifact')
+  sh(work, 'push', remote, 'gh-pages:gh-pages')
+  assert.throws(
+    () => publish({ distDir: dist(), deploy: { remote: 'github-pages', repo: remote, branch: null, cname: null } }),
+    /not a previous deploy/
+  )
+  assert.equal(file(remote, 'gh-pages', 'README.md'), 'source')
+})
+
 test('a repo that looks like a git option is pushed to as a path, not parsed as an option', () => {
   assert.throws(() => publish({ distDir: dist(), deploy: { remote: 'github-pages', repo: '--receive-pack=true', branch: null, cname: null } }), /does not appear to be a git repository|--receive-pack/)
 })

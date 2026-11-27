@@ -135,7 +135,7 @@ deploy:
   cname: talk.example.com  # optional custom domain → CNAME / .domains
 ```
 
-`deploy` builds, then force-pushes `dist/` as a single commit to the pages branch. Credentials come from your ssh-agent — no tokens, nothing stored. The pages branch is a build artifact; its history is intentionally one commit deep.
+`deploy` builds, then force-pushes `dist/` as a single commit to the pages branch. Credentials come from your ssh-agent — no tokens, nothing stored. The pages branch is a build artifact; its history is intentionally one commit deep. If the target branch holds anything that is not a previous deploy, the push is refused — `deploy` cannot overwrite a source branch.
 
 ## Known brittleness
 
