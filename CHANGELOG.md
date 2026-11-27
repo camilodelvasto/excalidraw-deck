@@ -20,7 +20,7 @@ Security and robustness release.
 - `e` toggles edit mode both ways; before, entering edit mode left no keyboard way back.
 
 ### Added
-- A slide with a `plate` colors the whole window while it is active — frames clip at 1920×1080, so this is the only way to a true edge-to-edge background. The overview keeps the canvas color.
+- A slide with a `plate` colors the whole window while it is active, fading in step with the camera flight — frames clip at 1920×1080, so this is the only way to a true edge-to-edge background. The overview keeps the canvas color.
 - Editing the URL hash navigates in place — a deck is scriptable without page reloads.
 - deck.yaml edits apply while `dev` runs: the page reloads with the new config.
 - Leaving the page with unsaved live drawings on the canvas asks first.

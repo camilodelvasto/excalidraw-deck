@@ -107,6 +107,28 @@ export function mount(rootEl, takes, config) {
   }
 
   const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
+
+  // The window background fades to the target slide's plate (or back to the theme) in step
+  // with the camera. Non-#rrggbb colors can't interpolate and switch instantly.
+  const channels = (c) => (/^#[0-9a-f]{6}$/i.test(c) ? [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)) : null)
+  let tinting = 0
+  function fadeBackground(api, to, animate) {
+    const from = api.getAppState().viewBackgroundColor
+    const set = (color) => api.updateScene({ appState: { viewBackgroundColor: color }, captureUpdate: CaptureUpdateAction.NEVER })
+    const run = ++tinting
+    const [a, b] = [channels(from), channels(to)]
+    if (!animate || from === to || !a || !b) return set(to)
+    const t0 = performance.now()
+    const tick = () => {
+      if (run !== tinting) return // a newer tint took over
+      const t = Math.min(1, (performance.now() - t0) / FLY_MS)
+      const k = ease(t)
+      set('#' + a.map((v, i) => Math.round(v + (b[i] - v) * k).toString(16).padStart(2, '0')).join(''))
+      if (t < 1) requestAnimationFrame(tick)
+    }
+    tick()
+  }
+
   let flying = 0
   let legs = 0 // each fly() is a leg; a newer one cancels the pending parts of the old
 
@@ -202,10 +224,7 @@ export function mount(rootEl, takes, config) {
         const target = index[slide]
         // A slide with a plate owns the whole window, not just its frame (frames clip
         // their contents, so a plate alone can never paint past the 1920×1080 edge).
-        api.updateScene({
-          appState: { viewBackgroundColor: target.plate ?? config.theme.background },
-          captureUpdate: CaptureUpdateAction.NEVER,
-        })
+        fadeBackground(api, target.plate ?? config.theme.background, animate)
         const leg = ++legs
         const go = () => leg === legs && moveCamera(api, target.bounds, { animate })
         const viaOverview = animate && arriving && target.via === 'overview'
@@ -249,7 +268,7 @@ export function mount(rootEl, takes, config) {
       overviewRef.current = !overviewRef.current
       if (overviewRef.current) {
         legs++
-        api.updateScene({ appState: { viewBackgroundColor: config.theme.background }, captureUpdate: CaptureUpdateAction.NEVER })
+        fadeBackground(api, config.theme.background, true)
         moveCamera(api, talkBounds(), { factor: 0.95, animate: true })
       } else fly(posRef.current.slide, true)
     }, [api, fly])
