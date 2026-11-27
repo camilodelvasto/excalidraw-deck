@@ -139,7 +139,7 @@ deploy:
 
 ## Known brittleness
 
-- Presenting hides Excalidraw's UI via its internal class names, and the font swap relies on registration order. Both can break on an Excalidraw upgrade, so the dependency is pinned to a compatible minor (`^0.18.1`). Bumping it means re-checking: UI hidden while presenting, themed fonts rendering.
+- Presenting hides Excalidraw's UI via its internal class names, and the font swap relies on registration order. Both can break on an Excalidraw upgrade, so the dependency is pinned to the exact version (`0.18.1`) and bumped deliberately. Bumping it means re-checking: UI hidden while presenting, themed fonts rendering.
 - `dev`/`build` keep a Vite cache in `.cache/` inside your deck folder — gitignore it.
 
 ## Contributing
