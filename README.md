@@ -46,6 +46,20 @@ npx excalidraw-deck deploy   # build, then force-push dist/ to your pages branch
 npx excalidraw-deck check    # validate slides.json + deck.yaml without serving
 ```
 
+## From zero to a URL
+
+1. Copy `examples/showcase/` to a new folder — that's your deck.
+2. `npx excalidraw-deck dev` — present, edit, reload.
+3. Create an empty repo on GitHub or Codeberg, then in `deck.yaml`:
+   ```yaml
+   deploy:
+     remote: github-pages
+     repo: git@github.com:you/your-talk.git
+   ```
+4. `npx excalidraw-deck deploy` — prints your live URL. If it 404s, enable Pages once (repo Settings → Pages → the pages branch).
+
+Your deck folder needs no git — `deploy` pushes only the built site.
+
 ## Writing slides
 
 `slides.json` holds `takes`: named groups of slides, each take a block of frames on the canvas. Each slide is a 1920×1080 frame; item coordinates are frame-relative.
@@ -146,7 +160,7 @@ deploy:
   cname: talk.example.com  # optional custom domain → CNAME / .domains
 ```
 
-`deploy` builds, then force-pushes `dist/` as a single commit to the pages branch. Credentials come from your ssh-agent — no tokens, nothing stored. The pages branch is a build artifact; its history is intentionally one commit deep. If the target branch holds anything that is not a previous deploy, the push is refused — `deploy` cannot overwrite a source branch.
+`deploy` builds, force-pushes `dist/` as a single commit to the pages branch, and prints the live URL. Credentials come from your ssh-agent — no tokens, nothing stored. The pages branch is a build artifact; its history is intentionally one commit deep. If the target branch holds anything that is not a previous deploy, the push is refused — `deploy` cannot overwrite a source branch.
 
 ## Known brittleness
 
