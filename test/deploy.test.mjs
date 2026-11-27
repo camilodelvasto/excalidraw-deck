@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { publish, adapters } from '../src/deploy/deploy.js'
+import { publish, adapters, pagesUrl } from '../src/deploy/deploy.js'
 
 // Hide the machine's git config: publish must work with no identity configured.
 process.env.GIT_CONFIG_GLOBAL = '/dev/null'
@@ -87,4 +87,13 @@ test('both adapters honor the same contract', () => {
     assert.equal(typeof adapter.defaultBranch, 'string')
     assert.ok(Array.isArray(adapter.files({ cname: null })))
   }
+})
+
+test('pagesUrl: the live URL from the repo slug', () => {
+  assert.equal(pagesUrl({ remote: 'github-pages', repo: 'git@github.com:Camilo/My-Talk.git' }), 'https://camilo.github.io/my-talk/')
+  assert.equal(pagesUrl({ remote: 'github-pages', repo: 'https://github.com/user/user.github.io.git' }), 'https://user.github.io/')
+  assert.equal(pagesUrl({ remote: 'github-pages', repo: 'git@github.com:u/talk.git', cname: 'talk.example.com' }), 'https://talk.example.com/')
+  assert.equal(pagesUrl({ remote: 'codeberg-pages', repo: 'git@codeberg.org:u/pages.git' }), 'https://u.codeberg.page/')
+  assert.equal(pagesUrl({ remote: 'codeberg-pages', repo: 'git@codeberg.org:u/talk.git' }), 'https://u.codeberg.page/talk/')
+  assert.equal(pagesUrl({ remote: 'github-pages', repo: '/tmp/local-remote' }), null)
 })

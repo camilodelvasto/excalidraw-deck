@@ -7,6 +7,17 @@ import codebergPages from './codeberg-pages.js'
 
 export const adapters = { 'github-pages': githubPages, 'codeberg-pages': codebergPages }
 
+// owner/name from an ssh or https clone URL; null for anything else (a local path in tests).
+const SLUG = /[:/]([^/:]+)\/([^/]+?)(?:\.git)?\/?$/
+
+export function pagesUrl(deploy) {
+  const adapter = adapters[deploy.remote]
+  if (!adapter) return null
+  if (deploy.cname) return `https://${deploy.cname}/`
+  const m = deploy.repo.includes(adapter.host) ? deploy.repo.match(SLUG) : null
+  return m ? adapter.url(m[1].toLowerCase(), m[2].toLowerCase()) : null
+}
+
 export function publish({ distDir, deploy }) {
   const adapter = adapters[deploy.remote]
   if (!adapter) throw new Error(`deck: no adapter for "${deploy.remote}" (have: ${Object.keys(adapters).join(', ')})`)

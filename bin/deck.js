@@ -39,9 +39,11 @@ const commands = {
       throw new Error('deck: deck.yaml has no deploy section — add deploy: { remote, repo } (see the README)')
     const { build } = await import('vite')
     await build(makeViteConfig({ userDir, command: 'build' }))
-    const { publish } = await import('../src/deploy/deploy.js')
+    const { publish, pagesUrl } = await import('../src/deploy/deploy.js')
     publish({ distDir: join(userDir, 'dist'), deploy: config.deploy })
     console.log(`deck: pushed dist/ to ${config.deploy.repo}`)
+    const url = pagesUrl(config.deploy)
+    if (url) console.log(`deck: live at ${url}`)
   },
 }
 
