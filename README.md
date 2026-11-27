@@ -2,6 +2,8 @@
 
 An excalidraw-based slide engine with a publishing mechanism for GitHub or Codeberg pages.
 
+**[See it in action](https://camilodelvasto.github.io/excalidraw-deck/)** — the launch deck ([`examples/launch/`](examples/launch/)), deployed with the tool's own `deploy` command.
+
 ## So why this? 
 
 I was in need of a system to quickly create slides from code using an agent (Claude Code for example), that I could deploy in a breeze to free static hosting such as GitHub or Codeberg pages.

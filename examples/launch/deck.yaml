@@ -11,3 +11,6 @@ theme:
     lemon: { stroke: '#e5f20d', fill: '#e5f20d' }
     paper: { stroke: '#faf9f7', fill: '#ffffff' }
     night: { stroke: '#1c1c18', fill: '#1c1c18' }
+deploy:
+  remote: github-pages
+  repo: git@github.com:camilodelvasto/excalidraw-deck.git
