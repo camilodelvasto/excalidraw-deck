@@ -38,7 +38,7 @@ test('npm pack size and contents', () => {
 
   // Verify required paths are included
   const requiredPaths = [
-    'examples/showcase/slides.js',
+    'examples/showcase/slides.json',
     'examples/showcase/deck.yaml',
     'examples/showcase/media/overlay.svg',
     'deck.d.ts',

@@ -20,7 +20,7 @@
     "app",
     "src",
     "schemas",
-    "examples/showcase/slides.js",
+    "examples/showcase/slides.json",
     "examples/showcase/deck.yaml",
     "examples/showcase/media",
     "deck.d.ts",

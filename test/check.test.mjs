@@ -14,9 +14,9 @@ test('showcase passes: ok output, correct counts', () => {
   assert.match(r.out, /deck: ok — \d+ slides in \d+ takes/)
 })
 
-test('no deck.yaml: a minimal slides.js with no config passes', () => {
+test('no deck.yaml: a minimal slides.json with no config passes', () => {
   const dir = mkdtempSync(join(tmpdir(), 'deck-check-'))
-  writeFileSync(join(dir, 'slides.js'), `export const takes = [{ name: 'one', slides: [{ name: 's', col: 0, items: [] }] }]\n`)
+  writeFileSync(join(dir, 'slides.json'), `{ "takes": [{ "name": "one", "slides": [{ "name": "s", "col": 0, "items": [] }] }] }\n`)
   const r = run(['check'], { cwd: dir })
   assert.equal(r.code, 0)
   assert.match(r.out, /deck: ok — \d+ slides in \d+ takes/)
@@ -24,7 +24,7 @@ test('no deck.yaml: a minimal slides.js with no config passes', () => {
 
 test('unknown item key: exit 1, one-line stderr naming the key', () => {
   const dir = mkdtempSync(join(tmpdir(), 'deck-check-'))
-  writeFileSync(join(dir, 'slides.js'), `export const takes = [{ name: 'one', slides: [{ name: 's', col: 0, items: [{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', colr: 'blue' }] }] }]\n`)
+  writeFileSync(join(dir, 'slides.json'), `{ "takes": [{ "name": "one", "slides": [{ "name": "s", "col": 0, "items": [{ "t": "text", "x": 0, "y": 0, "fs": 20, "text": "x", "colr": "blue" }] }] }] }\n`)
   const r = run(['check'], { cwd: dir })
   assert.equal(r.code, 1)
   assert.match(r.err, /unknown key "colr"/)
@@ -33,15 +33,15 @@ test('unknown item key: exit 1, one-line stderr naming the key', () => {
 
 test('undefined theme color: exit 1 naming the color', () => {
   const dir = mkdtempSync(join(tmpdir(), 'deck-check-'))
-  writeFileSync(join(dir, 'slides.js'), `export const takes = [{ name: 'one', slides: [{ name: 's', col: 0, items: [{ t: 'text', x: 0, y: 0, fs: 20, text: 'x', color: 'brand' }] }] }]\n`)
+  writeFileSync(join(dir, 'slides.json'), `{ "takes": [{ "name": "one", "slides": [{ "name": "s", "col": 0, "items": [{ "t": "text", "x": 0, "y": 0, "fs": 20, "text": "x", "color": "brand" }] }] }] }\n`)
   const r = run(['check'], { cwd: dir })
   assert.equal(r.code, 1)
   assert.match(r.err, /unknown color "brand"/)
 })
 
-test('syntax error in slides.js: exit 1, stderr non-empty and stack-free', () => {
+test('invalid JSON in slides.json: exit 1, stderr non-empty and stack-free', () => {
   const dir = mkdtempSync(join(tmpdir(), 'deck-check-'))
-  writeFileSync(join(dir, 'slides.js'), `export const takes = [\n`)
+  writeFileSync(join(dir, 'slides.json'), `{ "takes": [\n`)
   const r = run(['check'], { cwd: dir })
   assert.equal(r.code, 1)
   assert.ok(r.err.trim().length > 0, 'stderr is non-empty')
@@ -56,8 +56,8 @@ test('check [dir]: a path arg is validated, not cwd', () => {
   assert.match(r.out, /deck: ok — \d+ slides in \d+ takes/)
 })
 
-test('check /nonexistent: exits 1 with no-slides.js error, not a cwd ok', () => {
+test('check /nonexistent: exits 1 with no-slides.json error, not a cwd ok', () => {
   const r = run(['check', '/nonexistent-deck-dir'])
   assert.equal(r.code, 1)
-  assert.match(r.err, /no slides\.js/)
+  assert.match(r.err, /no slides\.json/)
 })

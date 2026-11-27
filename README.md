@@ -28,44 +28,47 @@ To respect your users' privacy, we recommend to bundle fonts and assets, so ever
 
 ```
 my-talk/
-  slides.js        # takes + slides as plain data (required)
+  slides.json      # the slides, pure data (required)
   deck.yaml        # optional: theme, behaviors, deploy
   media/           # optional: videos/images for overlay slots
 ```
 
 No React, no Vite, no index.html on your side. Copy `examples/showcase/` to start — it is the scaffold.
 
-`slides.js` is code: `dev`, `build`, and `check` all execute it. Only run decks you trust, the same rule as for any project you `npm install` in.
+A deck is pure data: nothing in it is code, nothing in it ever executes. A deck from anywhere — an agent, a stranger, a template — is safe to `check`, `dev`, `build`, and `deploy`.
 
 ```
 npx excalidraw-deck dev      # http://localhost:5173
 npx excalidraw-deck build    # dist/ — self-contained, serve anywhere
 npx excalidraw-deck deploy   # build, then force-push dist/ to your pages branch
-npx excalidraw-deck check    # validate slides.js + deck.yaml without serving
+npx excalidraw-deck check    # validate slides.json + deck.yaml without serving
 ```
 
 ## Writing slides
 
-`slides.js` exports `takes`: named groups of slides, each take a block of frames on the canvas. Each slide is a 1920×1080 frame; item coordinates are frame-relative.
+`slides.json` holds `takes`: named groups of slides, each take a block of frames on the canvas. Each slide is a 1920×1080 frame; item coordinates are frame-relative.
 
-The format is typed. Add `/** @type {import('excalidraw-deck').Takes} */` above the export and run `npm i -D excalidraw-deck` in the deck folder — the editor autocompletes every key. `schemas/slides.schema.json` describes the same contract for machines. `check` is the loop an agent runs after each edit.
+Point `$schema` at the bundled schema (`npm i -D excalidraw-deck` for a local path, or use the GitHub URL) and the editor autocompletes and validates every key. `check` is the loop an agent runs after each edit.
 
-```js
-export const takes = [
-  {
-    name: 'intro',
-    slides: [
-      {
-        name: 'title',
-        col: 0,
-        items: [
-          { t: 'text', x: 120, y: 110, fs: 72, text: 'hello', font: 'display' },
-          { t: 'note', x: 120, y: 320, size: 260, fs: 36, text: 'revealed', step: 1 },
-        ],
-      },
-    ],
-  },
-]
+```json
+{
+  "$schema": "./node_modules/excalidraw-deck/schemas/slides.schema.json",
+  "takes": [
+    {
+      "name": "intro",
+      "slides": [
+        {
+          "name": "title",
+          "col": 0,
+          "items": [
+            { "t": "text", "x": 120, "y": 110, "fs": 72, "text": "hello", "font": "display" },
+            { "t": "note", "x": 120, "y": 320, "size": 260, "fs": 36, "text": "revealed", "step": 1 }
+          ]
+        }
+      ]
+    }
+  ]
+}
 ```
 
 - `step: n` — revealed on the nth press inside the slide; no step = visible on arrival.
@@ -79,6 +82,12 @@ export const takes = [
 - An unknown type, color, font, item, or config key throws. Nothing defaults silently.
 
 Videos and images are an HTML layer over the canvas that follows the camera (Excalidraw has no video element). A video restarts when its slide lands, muted, plays once and holds its last frame.
+
+Want helpers and loops? Write a generator: your own script that builds the takes and writes `slides.json` — `deck.d.ts` types it (`/** @type {import('excalidraw-deck').SlidesFile} */`). The tool never runs your generator; you do. Converting a 0.1.x `slides.js` is the same move, once:
+
+```
+node --input-type=module -e "const {takes} = await import('./slides.js'); console.log(JSON.stringify({takes}, null, 2))" > slides.json
+```
 
 ## Driving the talk
 
@@ -95,7 +104,7 @@ Videos and images are an HTML layer over the canvas that follows the camera (Exc
 | e | edit: full Excalidraw mid-talk, draw live; e again (or the "present" button) returns |
 | f | fullscreen (phones/tablets also get a button) |
 
-Position lives in the URL hash (`#slide.step`, 0-based); a reload lands where you were, and editing the hash navigates in place — scriptable without reloads. Drawings made in edit mode are not saved — the deck is `slides.js` — so leaving the page with live drawings on the canvas asks first.
+Position lives in the URL hash (`#slide.step`, 0-based); a reload lands where you were, and editing the hash navigates in place — scriptable without reloads. Drawings made in edit mode are not saved — the deck is `slides.json` — so leaving the page with live drawings on the canvas asks first.
 
 ## deck.yaml
 

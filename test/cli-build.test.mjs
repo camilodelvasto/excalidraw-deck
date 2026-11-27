@@ -7,17 +7,17 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { run } from './cli.test.mjs'
 
-const SLIDES = `export const takes = [{ name: 'one', slides: [
-  { name: 's1', col: 0, items: [
-    { t: 'text', x: 120, y: 110, fs: 48, text: 'hello' },
-    { t: 'image', x: 120, y: 300, w: 400, h: 300, src: 'media/pic.svg', step: 1 },
-  ] },
-] }]\n`
+const SLIDES = `{ "takes": [{ "name": "one", "slides": [
+  { "name": "s1", "col": 0, "items": [
+    { "t": "text", "x": 120, "y": 110, "fs": 48, "text": "hello" },
+    { "t": "image", "x": 120, "y": 300, "w": 400, "h": 300, "src": "media/pic.svg", "step": 1 }
+  ] }
+] } ] }\n`
 const SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="4" height="3"><rect width="4" height="3" fill="#ff1055"/></svg>\n'
 
 function fixture() {
   const dir = mkdtempSync(join(tmpdir(), 'deck-fixture-'))
-  writeFileSync(join(dir, 'slides.js'), SLIDES)
+  writeFileSync(join(dir, 'slides.json'), SLIDES)
   mkdirSync(join(dir, 'media'))
   writeFileSync(join(dir, 'media', 'pic.svg'), SVG)
   return dir
@@ -40,10 +40,10 @@ test('deck build fails fast, with one line, on a broken project', { timeout: 60_
   const empty = mkdtempSync(join(tmpdir(), 'deck-empty-'))
   const r1 = run(['build'], { cwd: empty })
   assert.notEqual(r1.code, 0)
-  assert.match(r1.err, /deck: no slides\.js/)
+  assert.match(r1.err, /deck: no slides\.json/)
 
   const dir = fixture()
-  writeFileSync(join(dir, 'slides.js'), SLIDES.replace('media/pic.svg', 'media/gone.svg'))
+  writeFileSync(join(dir, 'slides.json'), SLIDES.replace('media/pic.svg', 'media/gone.svg'))
   const r2 = run(['build'], { cwd: dir })
   assert.notEqual(r2.code, 0)
   assert.match(r2.err, /slide "s1" uses media\/gone\.svg/)

@@ -10,7 +10,7 @@ const schema = JSON.parse(readFileSync(fileURLToPath(new URL('../schemas/slides.
 // Collect oneOf variants by each variant's `t` const value.
 function itemVariants(s) {
   const variants = {}
-  for (const v of s.items.properties.slides.items.properties.items.items.oneOf) {
+  for (const v of s.properties.takes.items.properties.slides.items.properties.items.items.oneOf) {
     const t = v.properties.t.const
     variants[t] = v
   }
@@ -21,10 +21,14 @@ function colorDef(s) {
   return s.$defs.color
 }
 
-test('root is an array of takes, each take has name and slides required', () => {
-  assert.equal(schema.type, 'array')
-  assert.equal(schema.minItems, 1, 'root takes array requires at least one take')
-  const take = schema.items
+test('root is { takes: [...] } with $schema allowed; each take has name and slides required', () => {
+  assert.equal(schema.type, 'object')
+  assert.equal(schema.additionalProperties, false)
+  assert.deepEqual(schema.required, ['takes'])
+  assert.ok(schema.properties.$schema, 'a $schema key is allowed so editors can validate')
+  assert.equal(schema.properties.takes.type, 'array')
+  assert.equal(schema.properties.takes.minItems, 1, 'takes requires at least one take')
+  const take = schema.properties.takes.items
   assert.equal(take.type, 'object')
   assert.equal(take.additionalProperties, false)
   assert.deepEqual([...take.required].sort(), ['name', 'slides'])
@@ -34,7 +38,7 @@ test('root is an array of takes, each take has name and slides required', () => 
 })
 
 test('slide has name, col, items required; via is const "overview"; additionalProperties false', () => {
-  const slide = schema.items.properties.slides.items
+  const slide = schema.properties.takes.items.properties.slides.items
   assert.equal(slide.type, 'object')
   assert.equal(slide.additionalProperties, false)
   assert.deepEqual([...slide.required].sort(), ['col', 'items', 'name'])

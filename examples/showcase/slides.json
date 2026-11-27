@@ -1,0 +1,328 @@
+{
+  "$schema": "https://raw.githubusercontent.com/camilodelvasto/excalidraw-deck/main/schemas/slides.schema.json",
+  "takes": [
+    {
+      "name": "camera",
+      "slides": [
+        {
+          "name": "title",
+          "col": 0,
+          "items": [
+            {
+              "t": "text",
+              "x": 120,
+              "y": 110,
+              "fs": 72,
+              "text": "excalidraw-deck",
+              "font": "display"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 320,
+              "fs": 40,
+              "text": "slides as data on one Excalidraw canvas \u2014\nthe camera flies frame to frame",
+              "font": "sans"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 950,
+              "fs": 28,
+              "text": "npx excalidraw-deck dev | build | deploy",
+              "font": "mono",
+              "color": "grey"
+            }
+          ]
+        },
+        {
+          "name": "camera",
+          "col": 1,
+          "items": [
+            {
+              "t": "text",
+              "x": 120,
+              "y": 110,
+              "fs": 72,
+              "text": "the camera",
+              "font": "display"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 320,
+              "fs": 40,
+              "text": "every slide is a 1920\u00d71080 frame on one canvas;\nflights are eased, zoom interpolates in log space",
+              "font": "sans"
+            },
+            {
+              "t": "arrow",
+              "from": [
+                120,
+                640
+              ],
+              "to": [
+                980,
+                640
+              ],
+              "color": "blue",
+              "text": "fly"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "steps",
+      "slides": [
+        {
+          "name": "steps and fades",
+          "col": 0,
+          "items": [
+            {
+              "t": "text",
+              "x": 120,
+              "y": 110,
+              "fs": 72,
+              "text": "steps and fades",
+              "font": "display"
+            },
+            {
+              "t": "note",
+              "x": 120,
+              "y": 320,
+              "size": 260,
+              "fs": 36,
+              "text": "step: 1",
+              "color": "yellow",
+              "step": 1
+            },
+            {
+              "t": "note",
+              "x": 440,
+              "y": 320,
+              "size": 260,
+              "fs": 36,
+              "text": "step: 2",
+              "color": "green",
+              "step": 2
+            },
+            {
+              "t": "box",
+              "x": 760,
+              "y": 320,
+              "w": 420,
+              "h": 260,
+              "fs": 36,
+              "text": "fade: 40",
+              "color": "violet",
+              "fill": "semi",
+              "step": 3,
+              "fade": 40
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 720,
+              "fs": 40,
+              "text": "an item reveals on its step \u2014 opacity animated,\nnever entering undo history",
+              "font": "sans",
+              "step": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "overview",
+      "slides": [
+        {
+          "name": "overview",
+          "col": 0,
+          "items": [
+            {
+              "t": "text",
+              "x": 120,
+              "y": 110,
+              "fs": 72,
+              "text": "overview",
+              "font": "display"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 320,
+              "fs": 40,
+              "text": "press o: the whole talk on one canvas;\nclick a frame to jump there",
+              "font": "sans"
+            }
+          ]
+        },
+        {
+          "name": "via overview",
+          "col": 1,
+          "via": "overview",
+          "items": [
+            {
+              "t": "text",
+              "x": 120,
+              "y": 110,
+              "fs": 72,
+              "text": "via: 'overview'",
+              "font": "display"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 320,
+              "fs": 40,
+              "text": "this slide declared via: overview \u2014\narriving here flew out to the whole talk first",
+              "font": "sans"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "media",
+      "slides": [
+        {
+          "name": "media overlay",
+          "col": 0,
+          "items": [
+            {
+              "t": "text",
+              "x": 120,
+              "y": 110,
+              "fs": 72,
+              "text": "media overlay",
+              "font": "display"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 300,
+              "fs": 40,
+              "text": "videos and images are an HTML layer over the canvas;\nthey follow the camera and cue when their slide lands",
+              "font": "sans"
+            },
+            {
+              "t": "image",
+              "x": 120,
+              "y": 480,
+              "w": 800,
+              "h": 450,
+              "src": "media/overlay.svg",
+              "step": 1
+            },
+            {
+              "t": "slot",
+              "x": 1000,
+              "y": 480,
+              "w": 800,
+              "h": 450,
+              "label": "media/your-screencast.mp4"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "slides": [
+        {
+          "name": "phones, clickers, keys",
+          "col": 0,
+          "items": [
+            {
+              "t": "text",
+              "x": 120,
+              "y": 110,
+              "fs": 72,
+              "text": "phones, clickers, keys",
+              "font": "display"
+            },
+            {
+              "t": "box",
+              "x": 120,
+              "y": 320,
+              "w": 540,
+              "h": 480,
+              "fs": 40,
+              "text": "tap left 35%\n= back",
+              "color": "red",
+              "fill": "pattern"
+            },
+            {
+              "t": "box",
+              "x": 690,
+              "y": 320,
+              "w": 540,
+              "h": 480,
+              "fs": 40,
+              "text": "middle\ntap = next\nhold = back",
+              "color": "grey"
+            },
+            {
+              "t": "box",
+              "x": 1260,
+              "y": 320,
+              "w": 540,
+              "h": 480,
+              "fs": 40,
+              "text": "tap right 35%\n= next",
+              "color": "green",
+              "fill": "pattern"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 900,
+              "fs": 40,
+              "text": "arrows, space, PageDown advance (clickers send PageDown);\ne edits live mid-talk, f toggles fullscreen",
+              "font": "sans"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "theming",
+      "slides": [
+        {
+          "name": "theming",
+          "col": 0,
+          "items": [
+            {
+              "t": "text",
+              "x": 120,
+              "y": 110,
+              "fs": 72,
+              "text": "theme as config",
+              "font": "display"
+            },
+            {
+              "t": "box",
+              "x": 120,
+              "y": 320,
+              "w": 640,
+              "h": 300,
+              "fs": 44,
+              "text": "brand",
+              "color": "brand",
+              "fill": "semi"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 740,
+              "fs": 40,
+              "text": "deck.yaml named this color; fonts and background\nswap the same way \u2014 defaults are stock Excalidraw",
+              "font": "sans"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

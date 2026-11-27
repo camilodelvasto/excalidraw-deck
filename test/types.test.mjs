@@ -31,13 +31,6 @@ function diagnostics(file) {
     .filter((d) => d.file?.fileName === file)
 }
 
-test('showcase → 0 diagnostics (custom color "brand" passes via string & {})', () => {
-  const file = join(ROOT, 'examples/showcase/slides.js')
-  const diags = diagnostics(file)
-  const messages = diags.map((d) => ts.flattenDiagnosticMessageText(d.messageText, '\n'))
-  assert.deepEqual(messages, [], `unexpected diagnostics:\n${messages.join('\n')}`)
-})
-
 test('valid-full → 0 diagnostics and build() does not throw', async () => {
   const file = join(ROOT, 'test/fixtures/valid-full/slides.js')
   const diags = diagnostics(file)

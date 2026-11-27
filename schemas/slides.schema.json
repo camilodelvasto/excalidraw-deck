@@ -2,214 +2,569 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/camilodelvasto/excalidraw-deck/main/schemas/slides.schema.json",
   "title": "excalidraw-deck slides",
-  "description": "The takes array exported by a slides.js file. Each take is a named block of slides.",
-  "type": "array",
-  "minItems": 1,
-  "$defs": {
-    "color": {
-      "anyOf": [
-        { "enum": ["black", "grey", "red", "light-red", "orange", "yellow", "green", "light-green", "blue", "light-blue", "violet", "light-violet"] },
-        { "type": "string" }
-      ]
+  "description": "A slides.json file: pure data, no code. The root is { \"takes\": [...] }; each take is a named block of slides.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "takes"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
     },
-    "font": { "enum": ["draw", "display", "sans", "mono", "hand"] },
-    "geo": { "enum": ["rectangle", "ellipse", "diamond"] },
-    "fill": { "enum": ["none", "semi", "pattern"] },
-    "dash": { "enum": ["draw", "dashed", "dotted"] },
-    "align": { "enum": ["start", "middle", "end"] },
-    "valign": { "enum": ["start", "middle", "end"] },
-    "arrowhead": { "enum": ["none", "arrow"] },
-    "step": { "type": "integer", "minimum": 0 },
-    "fade": { "type": "number", "minimum": 0, "maximum": 100 },
-    "from": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } },
-    "to": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } }
-  },
-  "items": {
-    "type": "object",
-    "additionalProperties": false,
-    "required": ["name", "slides"],
-    "properties": {
-      "name": { "type": "string" },
-      "slides": {
-        "type": "array",
-        "minItems": 1,
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["name", "col", "items"],
-          "properties": {
-            "name": { "type": "string" },
-            "col": { "type": "number" },
-            "via": { "const": "overview" },
+    "takes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "slides"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slides": {
+            "type": "array",
+            "minItems": 1,
             "items": {
-              "type": "array",
-              "items": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t", "x", "y", "fs", "text"],
-                    "properties": {
-                      "t": { "const": "text" },
-                      "x": { "type": "number" },
-                      "y": { "type": "number" },
-                      "fs": { "type": "number" },
-                      "text": { "type": "string" },
-                      "font": { "$ref": "#/$defs/font" },
-                      "color": { "$ref": "#/$defs/color" },
-                      "align": { "$ref": "#/$defs/align" },
-                      "angle": { "type": "number" },
-                      "w": { "type": "number" },
-                      "step": { "$ref": "#/$defs/step" },
-                      "fade": { "$ref": "#/$defs/fade" }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t", "x", "y", "w", "h", "text"],
-                    "properties": {
-                      "t": { "const": "box" },
-                      "x": { "type": "number" },
-                      "y": { "type": "number" },
-                      "w": { "type": "number" },
-                      "h": { "type": "number" },
-                      "text": { "type": "string" },
-                      "fs": { "type": "number" },
-                      "geo": { "$ref": "#/$defs/geo" },
-                      "color": { "$ref": "#/$defs/color" },
-                      "fill": { "$ref": "#/$defs/fill" },
-                      "dash": { "$ref": "#/$defs/dash" },
-                      "font": { "$ref": "#/$defs/font" },
-                      "align": { "$ref": "#/$defs/align" },
-                      "valign": { "$ref": "#/$defs/valign" },
-                      "ink": { "$ref": "#/$defs/color" },
-                      "step": { "$ref": "#/$defs/step" },
-                      "fade": { "$ref": "#/$defs/fade" }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t", "x", "y", "size", "text", "fs"],
-                    "properties": {
-                      "t": { "const": "note" },
-                      "x": { "type": "number" },
-                      "y": { "type": "number" },
-                      "size": { "type": "number" },
-                      "text": { "type": "string" },
-                      "fs": { "type": "number" },
-                      "color": { "$ref": "#/$defs/color" },
-                      "font": { "$ref": "#/$defs/font" },
-                      "ink": { "$ref": "#/$defs/color" },
-                      "step": { "$ref": "#/$defs/step" },
-                      "fade": { "$ref": "#/$defs/fade" }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t"],
-                    "properties": {
-                      "t": { "const": "plate" },
-                      "color": { "$ref": "#/$defs/color" },
-                      "step": { "$ref": "#/$defs/step" },
-                      "fade": { "$ref": "#/$defs/fade" }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t", "from", "to"],
-                    "properties": {
-                      "t": { "const": "arrow" },
-                      "from": { "$ref": "#/$defs/from" },
-                      "to": { "$ref": "#/$defs/to" },
-                      "color": { "$ref": "#/$defs/color" },
-                      "sw": { "type": "number" },
-                      "dash": { "$ref": "#/$defs/dash" },
-                      "text": { "type": "string" },
-                      "fs": { "type": "number" },
-                      "font": { "$ref": "#/$defs/font" },
-                      "ink": { "$ref": "#/$defs/color" },
-                      "start": { "$ref": "#/$defs/arrowhead" },
-                      "end": { "$ref": "#/$defs/arrowhead" },
-                      "step": { "$ref": "#/$defs/step" },
-                      "fade": { "$ref": "#/$defs/fade" }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t", "from", "to"],
-                    "properties": {
-                      "t": { "const": "line" },
-                      "from": { "$ref": "#/$defs/from" },
-                      "to": { "$ref": "#/$defs/to" },
-                      "color": { "$ref": "#/$defs/color" },
-                      "sw": { "type": "number" },
-                      "dash": { "$ref": "#/$defs/dash" },
-                      "text": { "type": "string" },
-                      "fs": { "type": "number" },
-                      "font": { "$ref": "#/$defs/font" },
-                      "ink": { "$ref": "#/$defs/color" },
-                      "step": { "$ref": "#/$defs/step" },
-                      "fade": { "$ref": "#/$defs/fade" }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t", "x", "y", "w", "h", "label"],
-                    "properties": {
-                      "t": { "const": "slot" },
-                      "x": { "type": "number" },
-                      "y": { "type": "number" },
-                      "w": { "type": "number" },
-                      "h": { "type": "number" },
-                      "label": { "type": "string" },
-                      "geo": { "$ref": "#/$defs/geo" },
-                      "fill": { "$ref": "#/$defs/fill" },
-                      "align": { "$ref": "#/$defs/align" },
-                      "valign": { "$ref": "#/$defs/valign" },
-                      "ink": { "$ref": "#/$defs/color" },
-                      "step": { "$ref": "#/$defs/step" },
-                      "fade": { "$ref": "#/$defs/fade" }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t", "x", "y", "w", "h", "src"],
-                    "properties": {
-                      "t": { "const": "video" },
-                      "x": { "type": "number" },
-                      "y": { "type": "number" },
-                      "w": { "type": "number" },
-                      "h": { "type": "number" },
-                      "src": { "type": "string", "pattern": "^media/" },
-                      "step": { "$ref": "#/$defs/step" }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["t", "x", "y", "w", "h", "src"],
-                    "properties": {
-                      "t": { "const": "image" },
-                      "x": { "type": "number" },
-                      "y": { "type": "number" },
-                      "w": { "type": "number" },
-                      "h": { "type": "number" },
-                      "src": { "type": "string", "pattern": "^media/" },
-                      "step": { "$ref": "#/$defs/step" }
-                    }
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "col",
+                "items"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "col": {
+                  "type": "number"
+                },
+                "via": {
+                  "const": "overview"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t",
+                          "x",
+                          "y",
+                          "fs",
+                          "text"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "text"
+                          },
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "fs": {
+                            "type": "number"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "font": {
+                            "$ref": "#/$defs/font"
+                          },
+                          "color": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "align": {
+                            "$ref": "#/$defs/align"
+                          },
+                          "angle": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          },
+                          "fade": {
+                            "$ref": "#/$defs/fade"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t",
+                          "x",
+                          "y",
+                          "w",
+                          "h",
+                          "text"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "box"
+                          },
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "h": {
+                            "type": "number"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "fs": {
+                            "type": "number"
+                          },
+                          "geo": {
+                            "$ref": "#/$defs/geo"
+                          },
+                          "color": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "fill": {
+                            "$ref": "#/$defs/fill"
+                          },
+                          "dash": {
+                            "$ref": "#/$defs/dash"
+                          },
+                          "font": {
+                            "$ref": "#/$defs/font"
+                          },
+                          "align": {
+                            "$ref": "#/$defs/align"
+                          },
+                          "valign": {
+                            "$ref": "#/$defs/valign"
+                          },
+                          "ink": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          },
+                          "fade": {
+                            "$ref": "#/$defs/fade"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t",
+                          "x",
+                          "y",
+                          "size",
+                          "text",
+                          "fs"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "note"
+                          },
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "size": {
+                            "type": "number"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "fs": {
+                            "type": "number"
+                          },
+                          "color": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "font": {
+                            "$ref": "#/$defs/font"
+                          },
+                          "ink": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          },
+                          "fade": {
+                            "$ref": "#/$defs/fade"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "plate"
+                          },
+                          "color": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          },
+                          "fade": {
+                            "$ref": "#/$defs/fade"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t",
+                          "from",
+                          "to"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "arrow"
+                          },
+                          "from": {
+                            "$ref": "#/$defs/from"
+                          },
+                          "to": {
+                            "$ref": "#/$defs/to"
+                          },
+                          "color": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "sw": {
+                            "type": "number"
+                          },
+                          "dash": {
+                            "$ref": "#/$defs/dash"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "fs": {
+                            "type": "number"
+                          },
+                          "font": {
+                            "$ref": "#/$defs/font"
+                          },
+                          "ink": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "start": {
+                            "$ref": "#/$defs/arrowhead"
+                          },
+                          "end": {
+                            "$ref": "#/$defs/arrowhead"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          },
+                          "fade": {
+                            "$ref": "#/$defs/fade"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t",
+                          "from",
+                          "to"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "line"
+                          },
+                          "from": {
+                            "$ref": "#/$defs/from"
+                          },
+                          "to": {
+                            "$ref": "#/$defs/to"
+                          },
+                          "color": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "sw": {
+                            "type": "number"
+                          },
+                          "dash": {
+                            "$ref": "#/$defs/dash"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "fs": {
+                            "type": "number"
+                          },
+                          "font": {
+                            "$ref": "#/$defs/font"
+                          },
+                          "ink": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          },
+                          "fade": {
+                            "$ref": "#/$defs/fade"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t",
+                          "x",
+                          "y",
+                          "w",
+                          "h",
+                          "label"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "slot"
+                          },
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "h": {
+                            "type": "number"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "geo": {
+                            "$ref": "#/$defs/geo"
+                          },
+                          "fill": {
+                            "$ref": "#/$defs/fill"
+                          },
+                          "align": {
+                            "$ref": "#/$defs/align"
+                          },
+                          "valign": {
+                            "$ref": "#/$defs/valign"
+                          },
+                          "ink": {
+                            "$ref": "#/$defs/color"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          },
+                          "fade": {
+                            "$ref": "#/$defs/fade"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t",
+                          "x",
+                          "y",
+                          "w",
+                          "h",
+                          "src"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "video"
+                          },
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "h": {
+                            "type": "number"
+                          },
+                          "src": {
+                            "type": "string",
+                            "pattern": "^media/"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "t",
+                          "x",
+                          "y",
+                          "w",
+                          "h",
+                          "src"
+                        ],
+                        "properties": {
+                          "t": {
+                            "const": "image"
+                          },
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "h": {
+                            "type": "number"
+                          },
+                          "src": {
+                            "type": "string",
+                            "pattern": "^media/"
+                          },
+                          "step": {
+                            "$ref": "#/$defs/step"
+                          }
+                        }
+                      }
+                    ]
                   }
-                ]
+                }
               }
             }
           }
         }
+      }
+    }
+  },
+  "$defs": {
+    "color": {
+      "anyOf": [
+        {
+          "enum": [
+            "black",
+            "grey",
+            "red",
+            "light-red",
+            "orange",
+            "yellow",
+            "green",
+            "light-green",
+            "blue",
+            "light-blue",
+            "violet",
+            "light-violet"
+          ]
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "font": {
+      "enum": [
+        "draw",
+        "display",
+        "sans",
+        "mono",
+        "hand"
+      ]
+    },
+    "geo": {
+      "enum": [
+        "rectangle",
+        "ellipse",
+        "diamond"
+      ]
+    },
+    "fill": {
+      "enum": [
+        "none",
+        "semi",
+        "pattern"
+      ]
+    },
+    "dash": {
+      "enum": [
+        "draw",
+        "dashed",
+        "dotted"
+      ]
+    },
+    "align": {
+      "enum": [
+        "start",
+        "middle",
+        "end"
+      ]
+    },
+    "valign": {
+      "enum": [
+        "start",
+        "middle",
+        "end"
+      ]
+    },
+    "arrowhead": {
+      "enum": [
+        "none",
+        "arrow"
+      ]
+    },
+    "step": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "fade": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "from": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "number"
+      }
+    },
+    "to": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "number"
       }
     }
   }

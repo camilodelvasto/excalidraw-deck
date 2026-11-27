@@ -1,17 +1,24 @@
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join, resolve, sep } from 'node:path'
-import { pathToFileURL } from 'node:url'
 
+const ROOT_KEYS = new Set(['$schema', 'takes'])
 const TAKE_KEYS = new Set(['name', 'slides'])
 const SLIDE_KEYS = new Set(['name', 'col', 'via', 'items'])
 
-export async function loadTakes(userDir) {
-  const file = join(userDir, 'slides.js')
-  if (!existsSync(file))
-    throw new Error(`deck: no slides.js in ${userDir} — a deck is a folder with slides.js (copy examples/showcase to start)`)
-  const mod = await import(pathToFileURL(file).href)
-  const takes = mod.takes
-  if (!Array.isArray(takes) || takes.length === 0) throw new Error('deck: slides.js must export a non-empty `takes` array')
+// A deck is pure data: slides.json is parsed, never executed.
+export function parseTakes(raw) {
+  let doc
+  try {
+    doc = JSON.parse(raw)
+  } catch (e) {
+    throw new Error(`deck: slides.json is not valid JSON — ${e.message}`)
+  }
+  if (doc === null || typeof doc !== 'object' || Array.isArray(doc))
+    throw new Error('deck: the slides.json root must be an object: { "takes": [...] }')
+  for (const key of Object.keys(doc))
+    if (!ROOT_KEYS.has(key)) throw new Error(`deck: unknown key "${key}" in slides.json (known: ${[...ROOT_KEYS].join(', ')})`)
+  const takes = doc.takes
+  if (!Array.isArray(takes) || takes.length === 0) throw new Error('deck: slides.json must have a non-empty "takes" array')
   for (const t of takes) {
     if (typeof t.name !== 'string' || !t.name || !Array.isArray(t.slides) || t.slides.length === 0)
       throw new Error('deck: each take needs a name and a non-empty slides array')
@@ -33,6 +40,16 @@ export async function loadTakes(userDir) {
     }
   }
   return takes
+}
+
+export function loadTakes(userDir) {
+  const file = join(userDir, 'slides.json')
+  if (!existsSync(file)) {
+    if (existsSync(join(userDir, 'slides.js')))
+      throw new Error('deck: slides.js is no longer supported — a deck is pure data. Move your takes into slides.json as { "takes": [...] } (the README shows a one-line converter)')
+    throw new Error(`deck: no slides.json in ${userDir} — a deck is a folder with slides.json (copy examples/showcase to start)`)
+  }
+  return parseTakes(readFileSync(file, 'utf8'))
 }
 
 export function checkMedia(userDir, takes) {

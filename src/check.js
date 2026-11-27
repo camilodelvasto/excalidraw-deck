@@ -4,7 +4,7 @@ import { createBuild, flattenTakes } from './build.js'
 import { stubConvert, STUB_FONT_FAMILY } from './stub-convert.js'
 
 export async function checkDeck(userDir) {
-  const takes = await loadTakes(userDir)
+  const takes = loadTakes(userDir)
   checkMedia(userDir, takes)
   const config = loadConfig(userDir)
   const { build } = createBuild({ convert: stubConvert, fontFamily: STUB_FONT_FAMILY })

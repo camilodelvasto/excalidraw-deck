@@ -4,6 +4,7 @@ import { extname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { loadConfig } from './config.js'
+import { loadTakes } from './project.js'
 
 const PKG = fileURLToPath(new URL('..', import.meta.url))
 const require = createRequire(import.meta.url)
@@ -43,22 +44,29 @@ export function assetCandidates(url, userDir, fontsDir) {
 }
 
 function deckVirtuals(userDir) {
-  const file = join(userDir, 'deck.yaml')
+  // Both virtuals read their file fresh on every load — slides.json and deck.yaml are
+  // parsed as data, never executed.
+  const sources = {
+    [join(userDir, 'slides.json')]: '\0deck-slides',
+    [join(userDir, 'deck.yaml')]: '\0deck-config',
+  }
   return {
     name: 'deck-virtuals',
     resolveId(id) {
-      if (id === 'virtual:deck-slides') return join(userDir, 'slides.js')
+      if (id === 'virtual:deck-slides') return '\0deck-slides'
       if (id === 'virtual:deck-config') return '\0deck-config'
     },
     load(id) {
+      if (id === '\0deck-slides') return `export const takes = ${JSON.stringify(loadTakes(userDir))}`
       if (id === '\0deck-config') return `export default ${JSON.stringify(loadConfig(userDir))}`
     },
-    // A deck.yaml edit reloads the page with the new config.
+    // An edit to either file reloads the page with the new data.
     configureServer(server) {
-      server.watcher.add(file)
+      server.watcher.add(Object.keys(sources))
       server.watcher.on('all', (event, path) => {
-        if (path !== file) return
-        const mod = server.moduleGraph.getModuleById('\0deck-config')
+        const id = sources[path]
+        if (!id) return
+        const mod = server.moduleGraph.getModuleById(id)
         if (mod) server.moduleGraph.invalidateModule(mod)
         server.ws.send({ type: 'full-reload' })
       })

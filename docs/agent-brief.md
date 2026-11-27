@@ -1,29 +1,27 @@
-# Writing a slides.js for excalidraw-deck
+# Writing a slides.json for excalidraw-deck
 
-You are writing `slides.js` for **excalidraw-deck**, a tool that renders slides as data on one Excalidraw canvas. Plain JavaScript, ES module, no imports. In a chat, return the complete file, ready to paste.
+You are writing `slides.json` for **excalidraw-deck**, a tool that renders slides as data on one Excalidraw canvas. Pure JSON — a deck is data, never code. In a chat, return the complete file, ready to paste.
 
 ## The shape
 
-```js
-/** @type {import('excalidraw-deck').Takes} */
-export const takes = [
-  {
-    name: 'intro',            // a take = a named group of slides (a chapter)
-    slides: [
-      {
-        name: 'title',        // required, non-empty, unique is best
-        col: 0,               // required: position in the take's row (0, 1, 2 …)
-        items: [ /* … */ ],   // required array
-      },
-    ],
-  },
-]
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/camilodelvasto/excalidraw-deck/main/schemas/slides.schema.json",
+  "takes": [
+    {
+      "name": "intro",
+      "slides": [
+        { "name": "title", "col": 0, "items": [] }
+      ]
+    }
+  ]
+}
 ```
 
-- The file must `export const takes`, a non-empty array. Each take needs `name` and a non-empty `slides`.
-- Slide keys allowed: `name`, `col`, `items`, `via`. `via` may only be `'overview'` (on arrival, the camera flies out to the whole take first).
+- The root is an object with a non-empty `takes` array (`$schema` is optional but helps editors validate). Each take = a named group of slides (a chapter); it needs `name` and a non-empty `slides`.
+- Slide keys allowed: `name` (required, non-empty, unique is best), `col` (required: position in the take's row), `items` (required array), `via`. `via` may only be `"overview"` (on arrival, the camera flies out to the whole take first).
 - Number slides with consecutive `col` values inside each take, starting at 0. `col: -1` places a closing slide to the left of the take's opening.
-- Helper functions and constants above the export are fine and encouraged (e.g. a `title()` helper).
+- JSON has no comments, variables or functions: write every item out in full. Repeating yourself is correct here.
 
 ## Coordinates
 
@@ -77,44 +75,42 @@ What they are:
 
 ## Example
 
-```js
-const txt = (x, y, fs, text, o = {}) => ({ t: 'text', x, y, fs, text, ...o })
-const title = (text) => txt(120, 110, 72, text, { font: 'display' })
-const body = (x, y, text, o = {}) => txt(x, y, 40, text, { font: 'sans', ...o })
-
-/** @type {import('excalidraw-deck').Takes} */
-export const takes = [
-  {
-    name: 'intro',
-    slides: [
-      {
-        name: 'title',
-        col: 0,
-        items: [
-          title('local-first tools'),
-          body(120, 320, 'your data stays on your machine'),
-          txt(120, 950, 28, 'Berlin, 2026', { font: 'mono', color: 'grey' }),
-        ],
-      },
-      {
-        name: 'three steps',
-        col: 1,
-        items: [
-          title('how it works'),
-          { t: 'note', x: 120, y: 320, size: 300, fs: 36, text: 'collect', color: 'yellow', step: 1 },
-          { t: 'arrow', from: [440, 470], to: [580, 470], color: 'grey', step: 2 },
-          { t: 'note', x: 600, y: 320, size: 300, fs: 36, text: 'process', color: 'green', step: 2 },
-          { t: 'arrow', from: [920, 470], to: [1060, 470], color: 'grey', step: 3 },
-          { t: 'box', x: 1080, y: 320, w: 500, h: 300, fs: 40, text: 'share', color: 'blue', fill: 'semi', step: 3 },
-        ],
-      },
-    ],
-  },
-]
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/camilodelvasto/excalidraw-deck/main/schemas/slides.schema.json",
+  "takes": [
+    {
+      "name": "intro",
+      "slides": [
+        {
+          "name": "title",
+          "col": 0,
+          "items": [
+            { "t": "text", "x": 120, "y": 110, "fs": 72, "text": "local-first tools", "font": "display" },
+            { "t": "text", "x": 120, "y": 320, "fs": 40, "text": "your data stays on your machine", "font": "sans" },
+            { "t": "text", "x": 120, "y": 950, "fs": 28, "text": "Berlin, 2026", "font": "mono", "color": "grey" }
+          ]
+        },
+        {
+          "name": "three steps",
+          "col": 1,
+          "items": [
+            { "t": "text", "x": 120, "y": 110, "fs": 72, "text": "how it works", "font": "display" },
+            { "t": "note", "x": 120, "y": 320, "size": 300, "fs": 36, "text": "collect", "color": "yellow", "step": 1 },
+            { "t": "arrow", "from": [440, 470], "to": [580, 470], "color": "grey", "step": 2 },
+            { "t": "note", "x": 600, "y": 320, "size": 300, "fs": 36, "text": "process", "color": "green", "step": 2 },
+            { "t": "arrow", "from": [920, 470], "to": [1060, 470], "color": "grey", "step": 3 },
+            { "t": "box", "x": 1080, "y": 320, "w": 500, "h": 300, "fs": 40, "text": "share", "color": "blue", "fill": "semi", "step": 3 }
+          ]
+        }
+      ]
+    }
+  ]
+}
 ```
 
 ## Before you answer
 
-Check every item against the table above: only listed keys, all required keys present, only allowed values, consecutive steps, everything inside 1920 × 1080.
+Check every item against the table above: only listed keys, all required keys present, only allowed values, consecutive steps, everything inside 1920 × 1080, and the whole file valid JSON (double quotes, no trailing commas, no comments).
 
 If you can run commands, run `npx excalidraw-deck check` in the deck folder and fix any error it prints. Otherwise return only the file.

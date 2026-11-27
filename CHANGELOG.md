@@ -4,6 +4,11 @@
 
 Security and robustness release.
 
+### Breaking
+- Decks are pure data. `slides.js` is gone; a deck is `slides.json` with the root `{ "$schema"?, "takes": [...] }`. Nothing in a deck ever executes, so `check`, `dev`, `build`, and `deploy` are safe on decks from anywhere. A `$schema` key replaces the `@type` annotation for editor autocomplete. Convert a 0.1.x deck once:
+  `node --input-type=module -e "const {takes} = await import('./slides.js'); console.log(JSON.stringify({takes}, null, 2))" > slides.json`
+  Helpers and loops move to generator scripts you own and run yourself — `deck.d.ts` exports `SlidesFile` to type them.
+
 ### Security
 - `deploy` passes the repo to git after `--`, and deck.yaml rejects repo/branch values starting with `-` — a crafted deck can no longer smuggle git options like `--receive-pack`.
 - `deploy` refuses to overwrite a branch whose tip is not a previous deploy commit, so a `branch: main` typo cannot destroy a source branch.

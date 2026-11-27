@@ -2,16 +2,16 @@
 
 Notes for coding agents working on this repository.
 
-**Writing a deck, not changing the tool?** Read [docs/agent-brief.md](docs/agent-brief.md) instead. It describes the `slides.js` format. After each edit, run `npx excalidraw-deck check` in the deck folder.
+**Writing a deck, not changing the tool?** Read [docs/agent-brief.md](docs/agent-brief.md) instead. It describes the `slides.json` format. After each edit, run `npx excalidraw-deck check` in the deck folder.
 
 ## What this is
 
-A CLI that turns a deck folder (`slides.js`, optional `deck.yaml`, `media/`) into a presentation on one Excalidraw canvas. It drives Vite through its JS API. Excalidraw itself is used unmodified.
+A CLI that turns a deck folder (`slides.json`, optional `deck.yaml`, `media/`) into a presentation on one Excalidraw canvas. It drives Vite through its JS API. Excalidraw itself is used unmodified.
 
 ## Layout
 
 - `bin/deck.js`: CLI entry (`dev`, `build`, `deploy`, `check`).
-- `src/project.js`: loads `slides.js`, validates takes and slides, checks media files exist.
+- `src/project.js`: parses and validates `slides.json`, checks media files exist. Decks are pure data — nothing in a deck is ever executed; keep it that way.
 - `src/config.js`: `deck.yaml` defaults and merge. Defaults live here and nowhere else.
 - `src/build.js`: deck items → Excalidraw element skeletons. `ITEM_KEYS` and `ITEM_REQUIRED` are the slide-item contract.
 - `src/presenter.jsx`: camera, reveals, overview, edit mode, media overlay.

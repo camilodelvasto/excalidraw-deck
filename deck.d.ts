@@ -1,5 +1,6 @@
 // The slide format as TypeScript types; mirrors the runtime contract in src/build.js
-// (ITEM_KEYS, ITEM_REQUIRED) — change one, change both.
+// (ITEM_KEYS, ITEM_REQUIRED) — change one, change both. Decks are pure data (slides.json);
+// these types serve generator scripts that write slides.json.
 
 // ── Primitive enums ─────────────────────────────────────────────────────────
 
@@ -183,7 +184,7 @@ export interface ImageItem {
  * Any item that can appear in a slide. Discriminated by `t`.
  *
  * The `{ t: string }` tail lets TypeScript accept items returned by untyped helpers
- * (e.g. examples/showcase/slides.js). Cost: a literal with an unknown `t` const, or one
+ * in generator scripts. Cost: a literal with an unknown `t` const, or one
  * that matches a known `t` but is missing required keys, can be absorbed by the tail with
  * 0 diagnostics. Unknown extra keys on literals and wrong value types for known keys still
  * error. The runtime (`build`/`check`) catches everything regardless.
@@ -220,3 +221,12 @@ export interface Take {
 
 /** The full talk: an ordered list of takes. */
 export type Takes = Take[]
+
+/**
+ * The shape of a slides.json file. Decks are pure data — these types are for generator
+ * scripts that produce slides.json, not for anything the tool executes.
+ */
+export interface SlidesFile {
+  $schema?: string
+  takes: Takes
+}

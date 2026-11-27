@@ -10,7 +10,7 @@ const USAGE = 'usage: excalidraw-deck dev | build | deploy | check [dir]'
 
 async function checkedProject() {
   const userDir = process.cwd()
-  checkMedia(userDir, await loadTakes(userDir))
+  checkMedia(userDir, loadTakes(userDir))
   return { userDir, config: loadConfig(userDir) }
 }
 
