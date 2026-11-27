@@ -17,7 +17,7 @@
               "x": 160,
               "y": 300,
               "fs": 104,
-              "text": "compose your frames\nthen focus on the talk",
+              "text": "compose your frames\nand deploy your talk",
               "align": "middle",
               "w": 1600,
               "font": "display",
@@ -28,7 +28,7 @@
               "x": 160,
               "y": 660,
               "fs": 40,
-              "text": "just a JSON file and a bit of Excalidraw magic",
+              "text": "a canvas-based deck player and deployer",
               "align": "middle",
               "w": 1600,
               "font": "sans",
@@ -51,7 +51,7 @@
               "x": 120,
               "y": 990,
               "fs": 26,
-              "text": "excalidraw-deck · npx excalidraw-deck dev",
+              "text": "npx excalidraw-deck dev",
               "font": "mono",
               "color": "grey"
             }
