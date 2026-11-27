@@ -1,0 +1,25 @@
+name: release
+
+permissions:
+  contents: read
+  id-token: write # npm trusted publishing + provenance
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest # trusted publishing needs npm >= 11.5
+      - run: npm ci
+      - run: npm test
+      - run: npm run audit
+      - run: npm publish --provenance --access public
