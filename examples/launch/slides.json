@@ -28,7 +28,7 @@
               "x": 160,
               "y": 660,
               "fs": 40,
-              "text": "this entire deck is one Excalidraw canvas\nand one JavaScript file",
+              "text": "this entire deck is one Excalidraw canvas\nand one JSON file",
               "align": "middle",
               "w": 1600,
               "font": "sans",
@@ -155,7 +155,7 @@
               "x": 120,
               "y": 320,
               "fs": 40,
-              "text": "this slide declared  via: 'overview'  —\nto get here, the camera flew out over the whole talk first",
+              "text": "this slide declared  \"via\": \"overview\"  —\nto get here, the camera flew out over the whole talk first",
               "font": "sans"
             },
             {
@@ -174,7 +174,7 @@
               "x": 120,
               "y": 920,
               "fs": 28,
-              "text": "{ name: 'see it whole', col: 1, via: 'overview' }",
+              "text": "{ \"name\": \"see it whole\", \"col\": 1, \"via\": \"overview\" }",
               "font": "mono",
               "color": "grey"
             }
@@ -202,7 +202,7 @@
               "x": 120,
               "y": 280,
               "fs": 30,
-              "text": "{\n  t: 'note',\n  x: 1180, y: 420,\n  size: 300, fs: 40,\n  text: 'hello',\n  color: 'yellow',\n  step: 1,\n}",
+              "text": "{\n  \"t\": \"note\",\n  \"x\": 1180, \"y\": 420,\n  \"size\": 300, \"fs\": 40,\n  \"text\": \"hello\",\n  \"color\": \"yellow\",\n  \"step\": 1\n}",
               "font": "mono"
             },
             {
@@ -236,7 +236,7 @@
               "x": 120,
               "y": 820,
               "fs": 40,
-              "text": "no builder API, no export pipeline — the file is the deck;\nhelpers are plain JavaScript",
+              "text": "pure data — parsed, never executed; want loops\nand helpers? write a generator that emits the file",
               "font": "sans",
               "step": 2
             }
@@ -269,7 +269,7 @@
               "w": 760,
               "h": 130,
               "fs": 34,
-              "text": "color: 'perrywinkle'",
+              "text": "\"color\": \"perrywinkle\"",
               "font": "mono",
               "color": "coral",
               "fill": "pattern",
@@ -292,7 +292,7 @@
               "w": 760,
               "h": 130,
               "fs": 34,
-              "text": "color: 'acid'",
+              "text": "\"color\": \"acid\"",
               "font": "mono",
               "color": "acid",
               "fill": "pattern",
@@ -588,7 +588,7 @@
               "x": 120,
               "y": 980,
               "fs": 28,
-              "text": "slides can declare  via: 'overview'  to arrive this way",
+              "text": "slides can declare  \"via\": \"overview\"  to arrive this way",
               "font": "mono",
               "color": "grey"
             }
