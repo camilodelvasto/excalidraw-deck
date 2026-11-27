@@ -11,7 +11,10 @@
   "exports": { ".": { "types": "./deck.d.ts" } },
   "files": ["bin", "app", "src", "schemas", "examples/showcase/slides.js", "examples/showcase/deck.yaml", "examples/showcase/media", "deck.d.ts", "README.md"],
   "engines": { "node": ">=20" },
-  "scripts": { "test": "node --test test/*.mjs" },
+  "scripts": {
+    "test": "node --test test/*.mjs",
+    "audit": "node scripts/audit.mjs"
+  },
   "devDependencies": {
     "typescript": "^5.0.0"
   },

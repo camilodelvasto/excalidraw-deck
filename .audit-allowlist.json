@@ -1,0 +1,12 @@
+{
+  "comment": "Known advisories that `npm run audit` tolerates. Every entry needs a reason. Anything not listed here fails CI.",
+  "allow": [
+    { "id": "GHSA-238p-pmpm-9mq7", "reason": "katex via @excalidraw/excalidraw > mermaid; no untrusted input in a deck; waiting on upstream" },
+    { "id": "GHSA-r5fr-rjxr-66jc", "reason": "lodash-es via @excalidraw/excalidraw; _.template is not reachable from deck input; waiting on upstream" },
+    { "id": "GHSA-xxjr-mmjv-4gpg", "reason": "lodash-es via @excalidraw/excalidraw; waiting on upstream" },
+    { "id": "GHSA-mwcw-c2x4-8c55", "reason": "nanoid via @excalidraw/excalidraw; id generation takes no deck input; waiting on upstream" },
+    { "id": "GHSA-28wg-ghj8-5hjv", "reason": "nanoid via @excalidraw/excalidraw; waiting on upstream" },
+    { "id": "GHSA-2v37-7h3g-55p8", "reason": "nanoid via @excalidraw/excalidraw; waiting on upstream" },
+    { "id": "GHSA-xwg4-73v4-xw9w", "reason": "nanoid via @excalidraw/excalidraw; waiting on upstream" }
+  ]
+}
