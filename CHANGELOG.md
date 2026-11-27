@@ -19,6 +19,7 @@ Security and robustness release.
 - `e` toggles edit mode both ways; before, entering edit mode left no keyboard way back.
 
 ### Added
+- Editing the URL hash navigates in place — a deck is scriptable without page reloads.
 - Leaving the page with unsaved live drawings on the canvas asks first.
 - Browser smoke test (`npm run test:browser`): fonts load, UI hidden while presenting, `e` toggles — the tripwire for Excalidraw bumps.
 - CI: audit gate with a reasoned allowlist, CodeQL, Dependabot, read-only tokens.
