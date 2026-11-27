@@ -74,7 +74,7 @@ export const takes = [
 - `via: 'overview'` — arriving at this slide flies out to the whole take first.
 - Item types: `text`, `box` (`geo`: rectangle, ellipse, diamond), `note`, `arrow`, `line`, `slot` (dashed placeholder), `plate` (full-bleed frame background), `video`, `image`.
 - Fonts (roles): `draw`, `display`, `sans`, `mono`, `hand`. Fills: `none`, `semi`, `pattern`. Dashes: `draw`, `dashed`, `dotted`.
-- Colors: Excalidraw's names (`black`, `grey`, `red`, `light-red`, `orange`, `yellow`, `green`, `light-green`, `blue`, `light-blue`, `violet`, `light-violet`) plus anything `deck.yaml` adds.
+- Colors: Excalidraw's names (`black`, `grey`, `red`, `light-red`, `orange`, `yellow`, `green`, `light-green`, `blue`, `light-blue`, `violet`, `light-violet`) plus anything `deck.yaml` adds. Every stock fill is a light pastel — a dark slide background needs a custom color in `theme.colors`, used on a `plate`.
 - `sw` sets arrow/line stroke width; `angle` rotates text (degrees); `ink` colors a label on dark fills.
 - An unknown type, color, font, item, or config key throws. Nothing defaults silently.
 
@@ -89,13 +89,13 @@ Videos and images are an HTML layer over the canvas that follows the camera (Exc
 | tap | next · hold ~½s back · right-click back (a remote mouse from stage) |
 | tap zones (phones) | left 35% back · right 35% next · middle keeps tap/hold |
 | o | overview: the whole talk; click a frame to jump there |
-| 3 Enter | jump to slide 3 |
+| 3 Enter | jump to slide 3 (slides count from 0, the same number as in the URL hash) |
 | + / − | zoom; pinch and drag work too |
 | Escape | back to the current slide, framed (any step press also re-frames) |
 | e | edit: full Excalidraw mid-talk, draw live; e again (or the "present" button) returns |
 | f | fullscreen (phones/tablets also get a button) |
 
-Position lives in the URL hash (`#slide.step`); a reload lands where you were. Drawings made in edit mode are not saved — the deck is `slides.js` — so leaving the page with live drawings on the canvas asks first.
+Position lives in the URL hash (`#slide.step`, 0-based); a reload lands where you were, and editing the hash navigates in place — scriptable without reloads. Drawings made in edit mode are not saved — the deck is `slides.js` — so leaving the page with live drawings on the canvas asks first.
 
 ## deck.yaml
 

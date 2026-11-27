@@ -4,7 +4,7 @@
 //   tap                  next · hold back · right-click back   (a remote mouse from stage)
 //   tap zones (phones)   left 35% back · right 35% next · middle keeps tap/hold
 //   o                    overview (whole talk); click a frame to jump there
-//   3 Enter              jump to slide 3 (the number in the URL hash)
+//   3 Enter              jump to slide 3 (0-based, the number in the URL hash)
 //   + / −                zoom in / out; pinch and drag work too
 //   Escape               back to the current slide, framed
 //   e                    edit: Excalidraw UI on, draw live; e again (or "present") returns
@@ -369,6 +369,9 @@ export function mount(rootEl, takes, config) {
         grammar.contextMenu()
       }
       const onResize = () => fly(posRef.current.slide, false)
+      // goto writes the hash with replaceState, which never fires hashchange — no loop.
+      const onHash = () => goto(readHash())
+      window.addEventListener('hashchange', onHash)
       window.addEventListener('keydown', onKey, true)
       window.addEventListener('pointerdown', onPointer, true)
       window.addEventListener('pointerdown', grammar.pointerDown, true)
@@ -378,6 +381,7 @@ export function mount(rootEl, takes, config) {
       window.addEventListener('resize', onResize)
       return () => {
         grammar.cancel()
+        window.removeEventListener('hashchange', onHash)
         window.removeEventListener('keydown', onKey, true)
         window.removeEventListener('pointerdown', onPointer, true)
         window.removeEventListener('pointerdown', grammar.pointerDown, true)

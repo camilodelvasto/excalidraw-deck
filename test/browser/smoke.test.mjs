@@ -66,6 +66,30 @@ test('e enters edit mode (UI visible), e again returns to presenting', { timeout
   await page.waitForFunction(() => getComputedStyle(document.querySelector('.layer-ui__wrapper')).display === 'none', { timeout: 10_000 })
 })
 
+test('keyboard advances and writes the position to the hash', { timeout: 30_000 }, async () => {
+  await page.keyboard.press('ArrowRight')
+  await page.waitForFunction(() => /^#\d+\.\d+$/.test(location.hash), { timeout: 10_000 })
+})
+
+test('editing the hash navigates in place, no reload', { timeout: 30_000 }, async () => {
+  // wait out any camera flight from the previous test: the overlay must hold still
+  await page.waitForFunction(
+    () => {
+      const x = document.querySelector('img').getBoundingClientRect().x
+      if (window.__settle?.x === x && performance.now() - window.__settle.t > 500) return true
+      if (window.__settle?.x !== x) window.__settle = { x, t: performance.now() }
+      return false
+    },
+    { timeout: 15_000, polling: 100 }
+  )
+  await page.evaluate(() => {
+    window.__x = document.querySelector('img').getBoundingClientRect().x
+    location.hash = '#5.0'
+  })
+  // the camera flies to the new slide; the media overlay follows it
+  await page.waitForFunction(() => document.querySelector('img').getBoundingClientRect().x !== window.__x, { timeout: 10_000 })
+})
+
 test('no page errors, no deck error banner', async () => {
   assert.equal(await page.$('.error'), null)
   assert.deepEqual(pageErrors, [])
