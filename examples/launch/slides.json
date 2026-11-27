@@ -17,7 +17,7 @@
               "x": 160,
               "y": 300,
               "fs": 104,
-              "text": "a talk is a drawing\nwith a camera",
+              "text": "compose your frames\nthen focus on the talk",
               "align": "middle",
               "w": 1600,
               "font": "display",
@@ -28,7 +28,7 @@
               "x": 160,
               "y": 660,
               "fs": 40,
-              "text": "this entire deck is one Excalidraw canvas\nand one JSON file",
+              "text": "just a JSON file and a bit of Excalidraw magic",
               "align": "middle",
               "w": 1600,
               "font": "sans",
@@ -40,7 +40,7 @@
               "x": 1280,
               "y": 850,
               "fs": 34,
-              "text": "press → and watch\nthe camera fly",
+              "text": "use your arrow →\nto navigate next",
               "font": "hand",
               "color": "lemon",
               "angle": -3,
@@ -63,7 +63,7 @@
       "name": "canvas",
       "slides": [
         {
-          "name": "the trick",
+          "name": "the canvas",
           "col": 0,
           "items": [
             {
@@ -71,7 +71,7 @@
               "x": 120,
               "y": 110,
               "fs": 72,
-              "text": "the trick",
+              "text": "the canvas",
               "font": "display"
             },
             {
@@ -236,14 +236,14 @@
               "x": 120,
               "y": 820,
               "fs": 40,
-              "text": "pure data — parsed, never executed; want loops\nand helpers? write a generator that emits the file",
+              "text": "write it by hand or let your agent compose it —\na deck is a file you can diff, review, and share",
               "font": "sans",
               "step": 2
             }
           ]
         },
         {
-          "name": "nothing fails silently",
+          "name": "name your own colors",
           "col": 1,
           "items": [
             {
@@ -251,7 +251,7 @@
               "x": 120,
               "y": 110,
               "fs": 72,
-              "text": "check: the agent loop",
+              "text": "name your own colors",
               "font": "display"
             },
             {
@@ -259,61 +259,88 @@
               "x": 120,
               "y": 300,
               "fs": 40,
-              "text": "the format is typed and validated — an unknown key,\ncolor, or font throws; nothing defaults silently",
+              "text": "deck.yaml names a palette once — slides use the names;\nfonts and the background swap just as easily",
               "font": "sans"
             },
             {
               "t": "box",
               "x": 120,
-              "y": 520,
-              "w": 760,
-              "h": 130,
-              "fs": 34,
-              "text": "\"color\": \"perrywinkle\"",
+              "y": 480,
+              "w": 300,
+              "h": 220,
+              "fs": 30,
+              "text": "pink",
               "font": "mono",
-              "color": "coral",
-              "fill": "pattern",
-              "step": 1
-            },
-            {
-              "t": "text",
-              "x": 940,
-              "y": 560,
-              "fs": 34,
-              "text": "✗ unknown color",
-              "font": "mono",
-              "color": "coral",
-              "step": 1
+              "color": "pink",
+              "ink": "paper",
+              "fill": "semi"
             },
             {
               "t": "box",
-              "x": 120,
-              "y": 700,
-              "w": 760,
-              "h": 130,
-              "fs": 34,
-              "text": "\"color\": \"acid\"",
-              "font": "mono",
-              "color": "acid",
-              "fill": "pattern",
-              "step": 2
-            },
-            {
-              "t": "text",
-              "x": 940,
-              "y": 740,
-              "fs": 34,
-              "text": "✓ ok — deck.yaml named it",
-              "font": "mono",
-              "color": "acid",
-              "step": 2
-            },
-            {
-              "t": "text",
-              "x": 120,
-              "y": 930,
+              "x": 460,
+              "y": 480,
+              "w": 300,
+              "h": 220,
               "fs": 30,
-              "text": "npx excalidraw-deck check   # after every edit",
+              "text": "coral",
+              "font": "mono",
+              "color": "coral",
+              "fill": "semi"
+            },
+            {
+              "t": "box",
+              "x": 800,
+              "y": 480,
+              "w": 300,
+              "h": 220,
+              "fs": 30,
+              "text": "acid",
+              "font": "mono",
+              "color": "acid",
+              "fill": "semi"
+            },
+            {
+              "t": "box",
+              "x": 1140,
+              "y": 480,
+              "w": 300,
+              "h": 220,
+              "fs": 30,
+              "text": "grape",
+              "font": "mono",
+              "color": "grape",
+              "ink": "paper",
+              "fill": "semi"
+            },
+            {
+              "t": "box",
+              "x": 1480,
+              "y": 480,
+              "w": 300,
+              "h": 220,
+              "fs": 30,
+              "text": "amber",
+              "font": "mono",
+              "color": "amber",
+              "fill": "semi"
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 780,
+              "fs": 36,
+              "text": "every color in this talk\nis one of these five",
+              "font": "hand",
+              "color": "amber",
+              "angle": -2,
+              "step": 1
+            },
+            {
+              "t": "text",
+              "x": 120,
+              "y": 960,
+              "fs": 28,
+              "text": "deck.yaml   theme → colors → acid: { stroke, fill }",
               "font": "mono",
               "color": "grey"
             }
@@ -465,7 +492,7 @@
               "x": 120,
               "y": 640,
               "fs": 36,
-              "text": "perfect for Q&A —\njump anywhere in two taps",
+              "text": "jump anywhere in two taps",
               "font": "hand",
               "color": "amber",
               "angle": -2,
@@ -763,7 +790,7 @@
               "x": 120,
               "y": 800,
               "fs": 40,
-              "text": "build emits a self-contained dist/ — fonts bundled, no CDN;\ndeploy force-pushes it to GitHub or Codeberg Pages over ssh",
+              "text": "build makes a self-contained site — fonts bundled, no CDN;\ndeploy publishes it to GitHub or Codeberg Pages, free hosting",
               "font": "sans",
               "step": 2
             }
@@ -778,7 +805,7 @@
               "x": 160,
               "y": 360,
               "fs": 96,
-              "text": "go compose your talk",
+              "text": "now try it yourself",
               "align": "middle",
               "w": 1600,
               "font": "display"
@@ -798,7 +825,7 @@
               "x": 1060,
               "y": 820,
               "fs": 32,
-              "text": "grab the scaffold:\ngithub.com/camilodelvasto/excalidraw-deck",
+              "text": "grab this presentation and make it yours:\ngithub.com/camilodelvasto/excalidraw-deck",
               "font": "hand",
               "color": "amber",
               "angle": -2,
