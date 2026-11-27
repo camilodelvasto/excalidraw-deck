@@ -1,6 +1,6 @@
 {
   "name": "excalidraw-deck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Slides as data on one Excalidraw canvas — dev, build, deploy to GitHub or Codeberg Pages.",
   "type": "module",
   "license": "MIT",
