@@ -2,6 +2,9 @@
 
 An excalidraw-based slide engine with a publishing mechanism for GitHub or Codeberg pages.
 
+https://github.com/user-attachments/assets/a4c643f2-76e2-4b0c-ab9a-f50ba819531a
+
+
 **[See it in action](https://camilodelvasto.github.io/excalidraw-deck/)** — the launch deck ([`examples/launch/`](examples/launch/)), deployed with the tool's own `deploy` command.
 
 ## So why this? 
