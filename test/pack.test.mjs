@@ -20,10 +20,11 @@ test('npm pack size and contents', () => {
     throw new Error(`npm pack --json output was not valid JSON:\n${raw}`)
   }
 
-  assert(Array.isArray(packData), 'pack output should be a JSON array')
-  assert(packData.length > 0, 'pack output should contain at least one entry')
+  // npm <= 11 prints an array of entries; npm >= 12 an object keyed by package name.
+  const entries = Array.isArray(packData) ? packData : Object.values(packData)
+  assert(entries.length > 0, 'pack output should contain at least one entry')
 
-  const { files, size } = packData[0]
+  const { files, size } = entries[0]
   assert(Array.isArray(files), 'pack data should have a files array')
 
   // Check that size is reasonable (no build artifacts)
