@@ -6,16 +6,36 @@
   "license": "MIT",
   "author": "Camilo Delvasto",
   "repository": "github:camilodelvasto/excalidraw-deck",
-  "bin": { "excalidraw-deck": "bin/deck.js" },
+  "bin": {
+    "excalidraw-deck": "bin/deck.js"
+  },
   "types": "./deck.d.ts",
-  "exports": { ".": { "types": "./deck.d.ts" } },
-  "files": ["bin", "app", "src", "schemas", "examples/showcase/slides.js", "examples/showcase/deck.yaml", "examples/showcase/media", "deck.d.ts", "README.md"],
-  "engines": { "node": ">=20" },
+  "exports": {
+    ".": {
+      "types": "./deck.d.ts"
+    }
+  },
+  "files": [
+    "bin",
+    "app",
+    "src",
+    "schemas",
+    "examples/showcase/slides.js",
+    "examples/showcase/deck.yaml",
+    "examples/showcase/media",
+    "deck.d.ts",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "node --test test/*.mjs",
+    "test:browser": "node --test test/browser/*.mjs",
     "audit": "node scripts/audit.mjs"
   },
   "devDependencies": {
+    "playwright": "^1.65.1",
     "typescript": "^5.0.0"
   },
   "dependencies": {
