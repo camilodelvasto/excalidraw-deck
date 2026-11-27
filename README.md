@@ -1,8 +1,28 @@
 # excalidraw-deck
 
-Slides as data on one [Excalidraw](https://github.com/excalidraw/excalidraw) canvas. The camera flies frame to frame; steps reveal items; a phone, a clicker, or a keyboard drives the talk; `deploy` pushes the build to GitHub Pages or Codeberg Pages over ssh.
+An excalidraw-based slide engine with a publishing mechanism for GitHub or Codeberg pages.
 
-Excalidraw itself is untouched — this is a wrapper around the stock package. Everything is offline: fonts are bundled, nothing loads from a CDN.
+## So why this? 
+
+I was in need of a system to quickly create slides from code using an agent (Claude Code for example), that I could deploy in a breeze to free static hosting such as GitHub or Codeberg pages.
+
+In the past I had used the amazing [tldraw](https://tldraw.dev/) and that's how I got to the also amazing (and open source) [excalidraw](https://github.com/excalidraw/excalidraw), which is used as the engine in this package.
+
+## What's the addition?
+
+Excalidraw lets you draw on canvas, but it doesn't have a slide/deck feature, so I built this tool on top of it so that we could use it as a presentation engine: the camera flies frame to frame; steps reveal items; a phone, a clicker, or a keyboard drives the talk; `deploy` pushes the build to GitHub Pages or Codeberg Pages over ssh.
+
+This is a wrapper around the stock package, Excalidraw itself is untouched.
+
+**Important**
+
+Composing slides is a task best left for an agent or a sophisticated model (Claude Code, Codex, Gemini), since it's a direct canvas representation + some helpers for interaction.
+
+### Philosophy
+
+This package builds on top of another great package, which is how we believe software could advance. Now people work with agents and they tend to re-create software instead of using packages that are tested, which is why we built this, so that agents can instantly use it and don't need to create custom code every single time, which is computationally and environmentally expensive.
+
+To respect your users' privacy, we recommend to bundle fonts and assets, so everything loads from the static files instead of a CDN.
 
 ## A deck is a folder
 
