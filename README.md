@@ -13,11 +13,11 @@ I was in need of a system to quickly create slides from code using an agent (Cla
 
 In the past I had used the amazing [tldraw](https://tldraw.dev/) and that's how I got to the also amazing (and open source) [excalidraw](https://github.com/excalidraw/excalidraw), which is used as the engine in this package.
 
-## What's the addition?
+## What's this actually?
 
 Excalidraw lets you draw on canvas, but it doesn't have a slide/deck feature, so I built this tool on top of it so that we could use it as a presentation engine: the camera flies frame to frame; steps reveal items; a phone, a clicker, or a keyboard drives the talk; `deploy` pushes the build to GitHub Pages or Codeberg Pages over ssh.
 
-This is a wrapper around the stock package, Excalidraw itself is untouched.
+This is a wrapper around the stock package, adding a deployment engine so that people can easily compose a presentation and deploy it.
 
 **Important**
 
