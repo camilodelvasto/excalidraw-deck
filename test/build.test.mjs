@@ -29,6 +29,18 @@ test('a missing required key throws with the item type and key', () => {
   assert.throws(() => build([slide([{ t: 'text', x: 0, y: 0, fs: 20 }])], TAKES, THEME), /text item is missing "text"/)
 })
 
+test('the index carries a slide\'s plate fill, resolved through the theme; null without a plate', () => {
+  const theme = { ...THEME, colors: { night: { stroke: '#1c1c18', fill: '#1c1c18' } } }
+  const { index } = build(
+    [
+      slide([{ t: 'plate', color: 'night' }, { t: 'text', x: 0, y: 0, fs: 20, text: 'a' }]),
+      { name: 's2', col: 1, take: 0, items: [{ t: 'text', x: 0, y: 0, fs: 20, text: 'b' }] },
+    ],
+    TAKES, theme)
+  assert.equal(index[0].plate, '#1c1c18')
+  assert.equal(index[1].plate, null)
+})
+
 test('theme colors extend the stock table without replacing it', () => {
   const theme = { ...THEME, colors: { brand: { stroke: '#ff1055', fill: '#ffd9e2' } } }
   const { elements } = build(

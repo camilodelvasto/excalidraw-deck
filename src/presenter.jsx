@@ -200,6 +200,12 @@ export function mount(rootEl, takes, config) {
     const fly = useCallback(
       (slide, animate, land, arriving = false) => {
         const target = index[slide]
+        // A slide with a plate owns the whole window, not just its frame (frames clip
+        // their contents, so a plate alone can never paint past the 1920×1080 edge).
+        api.updateScene({
+          appState: { viewBackgroundColor: target.plate ?? config.theme.background },
+          captureUpdate: CaptureUpdateAction.NEVER,
+        })
         const leg = ++legs
         const go = () => leg === legs && moveCamera(api, target.bounds, { animate })
         const viaOverview = animate && arriving && target.via === 'overview'
@@ -243,6 +249,7 @@ export function mount(rootEl, takes, config) {
       overviewRef.current = !overviewRef.current
       if (overviewRef.current) {
         legs++
+        api.updateScene({ appState: { viewBackgroundColor: config.theme.background }, captureUpdate: CaptureUpdateAction.NEVER })
         moveCamera(api, talkBounds(), { factor: 0.95, animate: true })
       } else fly(posRef.current.slide, true)
     }, [api, fly])

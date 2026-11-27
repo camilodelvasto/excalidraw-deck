@@ -50,7 +50,7 @@ What they are:
 - **text**: free text. `fs` is font size in px. Use `\n` for line breaks. `angle` rotates in degrees. With `align: 'middle'`, also give `w`: the text is centered inside a box of that width starting at `x`.
 - **box**: a shape with a label. `text` may be `''` for no label. `geo`: `rectangle` (default), `ellipse`, `diamond`. Label `fs` defaults to 32.
 - **note**: a sticky note, a filled square of side `size`. Default color yellow.
-- **plate**: a full-frame background color for that slide. Put it first in `items`. Every stock color's fill is a light pastel — a dark plate needs a custom color defined in the deck's `deck.yaml` under `theme.colors`.
+- **plate**: a full-frame background color for that slide. Put it first in `items`. Every stock color's fill is a light pastel — a dark plate needs a custom color defined in the deck's `deck.yaml` under `theme.colors`. While the slide is active, the whole window takes the plate's color (edge to edge), not just the frame.
 - **arrow** / **line**: `from: [x, y]`, `to: [x, y]`. `sw` is stroke width (default 4). Arrowheads `start` / `end`: `'none'` or `'arrow'` (default: end arrow only). `text` puts a label on it.
 - **slot**: a dashed grey placeholder with a label (e.g. "screenshot goes here").
 - **image** / **video**: files from the deck's `media/` folder. `src` must start with `media/`, e.g. `src: 'media/demo.mp4'` — anything else fails `check`. Videos autoplay muted when their slide lands and hold their last frame.

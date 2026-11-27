@@ -224,6 +224,7 @@ export function createBuild({ convert, fontFamily }) {
       const children = []
       const steps = [[]]
       const media = []
+      let plate = null
       slide.items.forEach((item, j) => {
         const step = item.step ?? 0
         while (steps.length <= step) steps.push([])
@@ -249,6 +250,7 @@ export function createBuild({ convert, fontFamily }) {
           })
           return
         }
+        if (item.t === 'plate' && plate === null) plate = color(item).fill
         const make = builders[item.t]
         const id = `s${i}-${j}`
         const skeleton = make(item)
@@ -261,7 +263,7 @@ export function createBuild({ convert, fontFamily }) {
         owner.set(id, [i, step, item.fade ?? 100])
       })
       skeletons.push({ type: 'frame', id: frameId, x: bounds.x, y: bounds.y, width: bounds.w, height: bounds.h, name: slide.name, children })
-      return { frameId, steps, media, bounds, via: slide.via, take: slide.take }
+      return { frameId, steps, media, bounds, via: slide.via, take: slide.take, plate }
     })
 
     const elements = convert(skeletons).map((el) => ({ ...el, locked: true }))

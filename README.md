@@ -74,7 +74,7 @@ export const takes = [
 - `via: 'overview'` — arriving at this slide flies out to the whole take first.
 - Item types: `text`, `box` (`geo`: rectangle, ellipse, diamond), `note`, `arrow`, `line`, `slot` (dashed placeholder), `plate` (full-bleed frame background), `video`, `image`.
 - Fonts (roles): `draw`, `display`, `sans`, `mono`, `hand`. Fills: `none`, `semi`, `pattern`. Dashes: `draw`, `dashed`, `dotted`.
-- Colors: Excalidraw's names (`black`, `grey`, `red`, `light-red`, `orange`, `yellow`, `green`, `light-green`, `blue`, `light-blue`, `violet`, `light-violet`) plus anything `deck.yaml` adds. Every stock fill is a light pastel — a dark slide background needs a custom color in `theme.colors`, used on a `plate`.
+- Colors: Excalidraw's names (`black`, `grey`, `red`, `light-red`, `orange`, `yellow`, `green`, `light-green`, `blue`, `light-blue`, `violet`, `light-violet`) plus anything `deck.yaml` adds. Every stock fill is a light pastel — a dark slide background needs a custom color in `theme.colors`, used on a `plate`. While a slide with a plate is active, the whole window takes the plate's color, edge to edge; the overview returns to the canvas color.
 - `sw` sets arrow/line stroke width; `angle` rotates text (degrees); `ink` colors a label on dark fills.
 - An unknown type, color, font, item, or config key throws. Nothing defaults silently.
 
