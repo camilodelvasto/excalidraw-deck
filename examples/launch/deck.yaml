@@ -1,0 +1,13 @@
+# $schema: ../../schemas/deck.schema.json
+# Warm paper canvas, vibrant accents — the moui palette: hot pink, acid, amber, mint.
+theme:
+  background: '#faf9f7'
+  colors:
+    pink: { stroke: '#d40d47', fill: '#ff1055' }
+    coral: { stroke: '#f03e3e', fill: '#ff6b6b' }
+    acid: { stroke: '#99a30d', fill: '#e5f20d' }
+    grape: { stroke: '#9c36b5', fill: '#cc5de8' }
+    amber: { stroke: '#e8590c', fill: '#ffa94d' }
+    lemon: { stroke: '#e5f20d', fill: '#e5f20d' }
+    paper: { stroke: '#faf9f7', fill: '#ffffff' }
+    night: { stroke: '#1c1c18', fill: '#1c1c18' }
