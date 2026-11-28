@@ -1,0 +1,10 @@
+{
+  "name": "excalidraw-deck",
+  "displayName": "Excalidraw Deck",
+  "description": "Create presentations with excalidraw-deck: slides as one JSON file on an Excalidraw canvas, presented in the browser, deployed to GitHub or Codeberg Pages.",
+  "version": "0.2.0",
+  "author": { "name": "Camilo Delvasto", "url": "https://github.com/camilodelvasto" },
+  "homepage": "https://github.com/camilodelvasto/excalidraw-deck",
+  "repository": "https://github.com/camilodelvasto/excalidraw-deck",
+  "license": "MIT"
+}

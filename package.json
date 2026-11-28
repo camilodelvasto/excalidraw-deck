@@ -2,6 +2,18 @@
   "name": "excalidraw-deck",
   "version": "0.2.0",
   "description": "Slides as data on one Excalidraw canvas — dev, build, deploy to GitHub or Codeberg Pages.",
+  "keywords": [
+    "presentation",
+    "slides",
+    "slide-deck",
+    "deck",
+    "excalidraw",
+    "canvas",
+    "talk",
+    "agent-friendly",
+    "github-pages",
+    "codeberg-pages"
+  ],
   "type": "module",
   "license": "MIT",
   "author": "Camilo Delvasto",

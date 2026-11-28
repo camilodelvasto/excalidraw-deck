@@ -62,6 +62,15 @@ npx excalidraw-deck check    # validate slides.json + deck.yaml without serving
 
 Your deck folder needs no git — `deploy` pushes only the built site.
 
+## Use with Claude Code
+
+```
+/plugin marketplace add camilodelvasto/excalidraw-deck
+/plugin install excalidraw-deck
+```
+
+Installs a skill that teaches the agent the slide format and the check/dev/deploy loop — then "make me a deck about X" just works. Any other agent: paste [`docs/agent-brief.md`](docs/agent-brief.md) into the conversation.
+
 ## Writing slides
 
 `slides.json` holds `takes`: named groups of slides, each take a block of frames on the canvas. Each slide is a 1920×1080 frame; item coordinates are frame-relative.

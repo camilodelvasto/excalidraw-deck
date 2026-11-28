@@ -1,0 +1,12 @@
+{
+  "name": "excalidraw-deck",
+  "owner": { "name": "Camilo Delvasto", "url": "https://github.com/camilodelvasto" },
+  "description": "Slide decks as data on an Excalidraw canvas — a skill that teaches the agent to compose, check, and deploy them.",
+  "plugins": [
+    {
+      "name": "excalidraw-deck",
+      "source": "./plugin",
+      "description": "Create presentations with excalidraw-deck: slides as one JSON file, presented in the browser, deployed to GitHub or Codeberg Pages."
+    }
+  ]
+}
